@@ -15,13 +15,13 @@ function VideoCard({ video }: Props){
     };
 
     return (
-    <div onClick={handleClick} style={{ cursor: "pointer" }}>
+    <div className="video-card" onClick={handleClick} style={{ cursor: "pointer" }}>
       <img
+        className="thumbnail"
         src={`http://localhost:8080/api/videos/${video.id}/thumbnail`}
         alt={video.title}
-        width="250"
       />
-      <h3>{video.title}</h3>
+      <h3 className="video-title">{video.title}</h3>
     </div>
   );
 }

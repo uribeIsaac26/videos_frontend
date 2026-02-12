@@ -21,9 +21,9 @@ function videoListPage(){
 
 
 return (
-    <div>
-        <h1>LIsta de Videos</h1>
-        <div>
+    <div className="page-container">
+        <h1>Videos</h1>
+        <div className="video-grid">
             {videos.map((video) => (
                 <VideoCard key={video.id} video={video} />
             ))}
