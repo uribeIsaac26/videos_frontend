@@ -13,3 +13,29 @@ export async function getAllVideos(): Promise<Video[]> {
 
     return data;
 }
+
+export async function uploadVideo(
+  title: string,
+  videoFile: File,
+  thumbnailFile?: File | null
+) {
+  const formData = new FormData();
+
+  formData.append("title", title);
+  formData.append("videoFile", videoFile);
+
+  if (thumbnailFile) {
+    formData.append("thumbnailFile", thumbnailFile);
+  }
+
+  const response = await fetch(`${BASE_URL}`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error("Error uploading video");
+  }
+
+  return response.json();
+}
