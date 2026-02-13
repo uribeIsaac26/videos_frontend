@@ -1,6 +1,6 @@
 import type { Video } from "../types/Video";
 
-const BASE_URL = "http://localhost:8080/api/videos";
+const BASE_URL = "http://192.168.1.7:8080/api/videos";
 
 export async function getAllVideos(): Promise<Video[]> {
     const response = await fetch(BASE_URL);

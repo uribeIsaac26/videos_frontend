@@ -5,17 +5,17 @@ function VideoPlayerPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="player-page">
+    <div className="video-player-page">
       <button className="back-button" onClick={()=> navigate("/")}>
           Volver
       </button>
 
       <h1 className="player-title">Reproduciendo video</h1>
-      <div className="video--container">
+      <div className="video-container">
         <video 
-          className="videoo-player"
+          className="video-player"
           controls
-          src={`http://localhost:8080/api/videos/${id}/video`}
+          src={`http://192.168.1.7:8080/api/videos/${id}/video`}
         />
       </div>
     </div>
