@@ -1,5 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function VideoPlayerPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -15,7 +17,7 @@ function VideoPlayerPage() {
         <video 
           className="video-player"
           controls
-          src={`http://192.168.1.7:8080/api/videos/${id}/video`}
+          src={`${API_URL}/api/videos/${id}/video`}
         />
       </div>
     </div>

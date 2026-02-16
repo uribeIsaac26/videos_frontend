@@ -1,11 +1,12 @@
 import type { Video } from "../types/Video";
 
-const BASE_URL = "http://192.168.1.7:8080/api/videos";
+const API_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = `${API_URL}/api/videos`;
 
 export async function getAllVideos(): Promise<Video[]> {
     const response = await fetch(BASE_URL);
 
-    if(!response){
+    if(!response.ok){
         throw new Error("Error al obtener los videos")
     }
 
