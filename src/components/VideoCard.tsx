@@ -1,12 +1,12 @@
 import type { Video } from "../types/Video";
 import { useNavigate } from "react-router-dom";
+import { getToken } from "../services/AuthService";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 interface Props{
     video: Video;
 }
-
 
 function VideoCard({ video }: Props){
 
