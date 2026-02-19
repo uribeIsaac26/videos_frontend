@@ -1,10 +1,47 @@
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { getToken } from "../services/AuthService";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 function VideoPlayerPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const [videoSrc, setVideoSrc] = useState<string | null>(null);
+
+  useEffect(()=>{
+    const fetchVideo = async() => {
+      const token = getToken();
+        
+      const response = await fetch(
+        `${API_URL}/api/videos/${id}/video`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if(!response.ok){
+        console.error("Error cargando el video");
+        return;
+      }
+
+      const blob = await response.blob();
+      const videoUrl = URL.createObjectURL(blob);
+
+      setVideoSrc(videoUrl)
+    };
+
+    fetchVideo();
+
+    return () =>{
+      if(videoSrc){
+        URL.revokeObjectURL(videoSrc);
+      }
+    }
+  }, [id])
 
   return (
     <div className="video-player-page">
@@ -14,11 +51,12 @@ function VideoPlayerPage() {
 
       <h1 className="player-title">Reproduciendo video</h1>
       <div className="video-container">
-        <video 
-          className="video-player"
-          controls
-          src={`${API_URL}/api/videos/${id}/video`}
-        />
+
+        {videoSrc ? (
+          <video className="video-player" controls src={videoSrc} />
+        ): (
+          <p>Cargando Video..</p>
+        )}
       </div>
     </div>
   );
