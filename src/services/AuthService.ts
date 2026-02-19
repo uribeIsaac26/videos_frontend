@@ -1,3 +1,4 @@
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 export async function login(username: string, password: string ) {
@@ -18,7 +19,7 @@ export async function login(username: string, password: string ) {
     sessionStorage.setItem("token", data.token);
 
     return data;
-}
+}   
 
 export function logout(){
     sessionStorage.removeItem("token");

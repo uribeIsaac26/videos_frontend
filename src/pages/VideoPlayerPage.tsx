@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getToken } from "../services/AuthService";
+import { deleteVideo } from "../api/VideoApi";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -9,6 +10,22 @@ function VideoPlayerPage() {
   const navigate = useNavigate();
 
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
+
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm(
+      "Estas seguro de que quieres eliminar el video?"
+    );
+
+    if(!confirmDelete) return;
+
+    try{
+      await deleteVideo(Number(id));
+      navigate("/");
+    }catch(error){
+      console.error("Error eliminando el video ", error);
+      alert("No se pudo eliminar el video");
+    }
+  };
 
   useEffect(()=>{
     const fetchVideo = async() => {
@@ -58,6 +75,9 @@ function VideoPlayerPage() {
           <p>Cargando Video..</p>
         )}
       </div>
+      <button className="back-button" onClick={handleDelete}>
+        Eliminar Video
+      </button>
     </div>
   );
 }

@@ -64,3 +64,17 @@ export async function uploadVideo(
 
   return response.json();
 }
+
+export async function deleteVideo(id:number) {
+
+  const response = await fetch(`${BASE_URL}/${id}`, {
+    method: "DELETE",
+    headers:{
+      ...getAuthHeaders(),
+    }
+  });
+
+  if(!response.ok){
+    throw new Error("No se pudo eliminar el video");
+  }
+}
