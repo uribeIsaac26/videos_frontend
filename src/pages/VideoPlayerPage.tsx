@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getToken } from "../services/AuthService";
 import { deleteVideo } from "../api/VideoApi";
+import { useSearchParams } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 function VideoPlayerPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const page = searchParams.get("page") || "0";
 
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
 
@@ -16,21 +19,21 @@ function VideoPlayerPage() {
       "Estas seguro de que quieres eliminar el video?"
     );
 
-    if(!confirmDelete) return;
+    if (!confirmDelete) return;
 
-    try{
+    try {
       await deleteVideo(Number(id));
-      navigate("/");
-    }catch(error){
+      navigate(`/?page=${page}`);
+    } catch (error) {
       console.error("Error eliminando el video ", error);
       alert("No se pudo eliminar el video");
     }
   };
 
-  useEffect(()=>{
-    const fetchVideo = async() => {
+  useEffect(() => {
+    const fetchVideo = async () => {
       const token = getToken();
-        
+
       const response = await fetch(
         `${API_URL}/api/videos/${id}/video`,
         {
@@ -40,7 +43,7 @@ function VideoPlayerPage() {
         }
       );
 
-      if(!response.ok){
+      if (!response.ok) {
         console.error("Error cargando el video");
         return;
       }
@@ -53,8 +56,8 @@ function VideoPlayerPage() {
 
     fetchVideo();
 
-    return () =>{
-      if(videoSrc){
+    return () => {
+      if (videoSrc) {
         URL.revokeObjectURL(videoSrc);
       }
     }
@@ -62,8 +65,9 @@ function VideoPlayerPage() {
 
   return (
     <div className="video-player-page">
-      <button className="back-button" onClick={()=> navigate("/")}>
-          Volver
+      <button className="back-button"
+        onClick={() => navigate(`/?page=${page}`)}>
+        Volver
       </button>
 
       <h1 className="player-title">Reproduciendo video</h1>
@@ -71,7 +75,7 @@ function VideoPlayerPage() {
 
         {videoSrc ? (
           <video className="video-player" controls src={videoSrc} />
-        ): (
+        ) : (
           <p>Cargando Video..</p>
         )}
       </div>

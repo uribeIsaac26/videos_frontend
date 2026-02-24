@@ -215,3 +215,60 @@ h1 {
     transform: rotate(360deg);
   }
 }
+
+/* ===================== */
+/* PAGINATION STYLES */
+/* ===================== */
+
+.pagination-container {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.pagination-button {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  background-color: #272727;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.pagination-button:hover:not(:disabled) {
+  background-color: #3ea6ff;
+  transform: translateY(-2px);
+}
+
+.pagination-button:disabled {
+  background-color: #444;
+  color: #888;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.pagination-info {
+  font-size: 14px;
+  color: #aaa;
+  font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  .pagination-container {
+    gap: 10px;
+  }
+
+  .pagination-button {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .pagination-info {
+    font-size: 12px;
+  }
+}

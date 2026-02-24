@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import type { Video } from "../types/Video";
 import { getAllVideos } from "../api/VideoApi";
 import VideoCard from "../components/VideoCard";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { logout } from "../services/AuthService";
 
 function videoListPage() {
     const [videos, setVideos] = useState<Video[]>([]);
-    const [page, setPage] = useState(0);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const page = Number(searchParams.get("page")) || 0;
     const [totalPages, setTotalPages] = useState(0);
     const navigate = useNavigate();
 
@@ -23,8 +24,7 @@ function videoListPage() {
 
     const fetchVideos = async (currentPage: number) => {
         try {
-            const data = await getAllVideos(currentPage, 6);
-            console.log("DATA:", data);
+            const data = await getAllVideos(currentPage, 10);
             setVideos(data.content);
             setTotalPages(data.totalPages);
         } catch (error) {
@@ -44,26 +44,28 @@ function videoListPage() {
             </button>
             <div className="video-grid">
                 {videos.map((video) => (
-                    <VideoCard key={video.id} video={video} />
+                    <VideoCard key={video.id} video={video} currentPage={page} />
                 ))}
             </div>
-            <div style={{ marginTop: "20px", textAlign: "center" }}>
+            <div className="pagination-container">
                 <button
+                    className="pagination-button"
                     disabled={page === 0}
-                    onClick={() => setPage(page - 1)}
+                    onClick={() => setSearchParams({ page: (page - 1).toString() })}
                 >
-                    Anterior
+                    ◀ Anterior
                 </button>
 
-                <span style={{ margin: "0 15px" }}>
+                <span className="pagination-info">
                     Página {page + 1} de {totalPages}
                 </span>
 
                 <button
+                    className="pagination-button"
                     disabled={page + 1 === totalPages}
-                    onClick={() => setPage(page + 1)}
+                    onClick={() => setSearchParams({ page: (page + 1).toString() })}
                 >
-                    Siguiente
+                    Siguiente ▶
                 </button>
             </div>
         </div>

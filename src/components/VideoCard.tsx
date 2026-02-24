@@ -7,15 +7,16 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 interface Props{
     video: Video;
+    currentPage: number;
 }
 
-function VideoCard({ video }: Props){
+function VideoCard({ video, currentPage }: Props){
 
     const navigate = useNavigate();
     const [thumbnailSrc, setThumbnailSrc] = useState<string | null>(null);
 
     const handleClick = () => {
-        navigate(`/videos/${video.id}`);
+        navigate(`/videos/${video.id}?page=${currentPage}`);
     };
 
     useEffect(() => {
