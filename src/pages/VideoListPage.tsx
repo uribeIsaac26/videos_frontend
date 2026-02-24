@@ -7,26 +7,30 @@ import { logout } from "../services/AuthService";
 
 function videoListPage() {
     const [videos, setVideos] = useState<Video[]>([]);
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
     const navigate = useNavigate();
 
 
     useEffect(() => {
-        fetchVideos();
-    }, []);
+        fetchVideos(page);
+    }, [page]);
 
     const handleLogout = () => {
         logout();
         navigate("/login")
     }
 
-    const fetchVideos = async () => {
+    const fetchVideos = async (currentPage: number) => {
         try {
-            const data = await getAllVideos();
-            setVideos(data);
+            const data = await getAllVideos(currentPage, 6);
+            console.log("DATA:", data);
+            setVideos(data.content);
+            setTotalPages(data.totalPages);
         } catch (error) {
             console.error("Error cargando videos", error);
         }
-    }
+    };
 
 
     return (
@@ -42,6 +46,25 @@ function videoListPage() {
                 {videos.map((video) => (
                     <VideoCard key={video.id} video={video} />
                 ))}
+            </div>
+            <div style={{ marginTop: "20px", textAlign: "center" }}>
+                <button
+                    disabled={page === 0}
+                    onClick={() => setPage(page - 1)}
+                >
+                    Anterior
+                </button>
+
+                <span style={{ margin: "0 15px" }}>
+                    Página {page + 1} de {totalPages}
+                </span>
+
+                <button
+                    disabled={page + 1 === totalPages}
+                    onClick={() => setPage(page + 1)}
+                >
+                    Siguiente
+                </button>
             </div>
         </div>
     );

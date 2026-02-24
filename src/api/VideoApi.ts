@@ -12,8 +12,12 @@ function getAuthHeaders(){
   }
 }
 
-export async function getAllVideos(): Promise<Video[]> {
-    const response = await fetch(BASE_URL, {
+export async function getAllVideos(
+  page: number,
+  size: number
+): Promise<any> {
+    const response = await fetch(
+      `${BASE_URL}?page=${page}&size=${size}&sort=id,desc`, {
       headers: {
         ...getAuthHeaders(),
       },

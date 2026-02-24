@@ -19,7 +19,8 @@ export default function Login() {
             await login(username, password);
             navigate("/")
         } catch (err) {
-            setError("Usuario o password incorrecto")
+            alert("Usuario o password incorrecto");
+            setError("Usuario o password incorrecto");
         } finally {
             setLoading(false)
         }
