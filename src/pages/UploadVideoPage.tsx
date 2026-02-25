@@ -132,7 +132,7 @@ function UploadVideoPage() {
                     status: "pending"
                   }));
 
-                  setVideos(filesArray);
+                  setVideos(prev => [...prev, ...filesArray]);
                   setUploadCompleted(false);
                 }}
                 required
