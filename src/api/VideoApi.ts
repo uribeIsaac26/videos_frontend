@@ -36,37 +36,57 @@ export async function getAllVideos(
     return data;
 }
 
-export async function uploadVideo(
+export function uploadVideo(
   title: string,
   videoFile: File,
-  thumbnailFile?: File | null
-) {
-  const formData = new FormData();
+  thumbnailFile: File | null,
+  onProgress: (percent: number) => void
+): Promise<any> {
 
-  formData.append("title", title);
-  formData.append("videoFile", videoFile);
+  return new Promise((resolve, reject) => {
 
-  if (thumbnailFile) {
-    formData.append("thumbnailFile", thumbnailFile);
-  }
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("videoFile", videoFile);
 
-  const response = await fetch(`${BASE_URL}`, {
-    method: "POST",
-    headers: {
-      ...getAuthHeaders(),
-    },
-    body: formData,
-  });
+    if (thumbnailFile) {
+      formData.append("thumbnailFile", thumbnailFile);
+    }
 
-  if (!response.ok) {
-    if(response.status === 401){
-        localStorage.removeItem("token")
-        window.location.href = "/login"
+    const xhr = new XMLHttpRequest();
+
+    xhr.open("POST", BASE_URL);
+
+    // Auth header
+    const token = getToken();
+    if (token) {
+      xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+    }
+
+    // 🔥 Progreso
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const percent = Math.round((event.loaded * 100) / event.total);
+        onProgress(percent);
       }
-    throw new Error("Error uploading video");
-  }
+    };
 
-  return response.json();
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(JSON.parse(xhr.responseText));
+      } else {
+        if (xhr.status === 401) {
+          localStorage.removeItem("token");
+          window.location.href = "/login";
+        }
+        reject(new Error("Error uploading video"));
+      }
+    };
+
+    xhr.onerror = () => reject(new Error("Network error"));
+
+    xhr.send(formData);
+  });
 }
 
 export async function deleteVideo(id:number) {
