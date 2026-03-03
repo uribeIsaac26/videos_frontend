@@ -1,6 +1,5 @@
 import type { Video } from "../types/Video";
 import { useNavigate } from "react-router-dom";
-import { getToken } from "../services/AuthService";
 import { useEffect, useState } from "react";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -22,16 +21,12 @@ function VideoCard({ video, currentPage }: Props){
     useEffect(() => {
       const fetchThumnail = async () => {
         try{
-          const token = getToken();
-
-          const response = await fetch(
-            `${API_URL}/api/videos/${video.id}/thumbnail`,
-            {
-              headers:{
-                Authorization: `Bearer ${token}`
-              }
-            }
-          );
+           const response = await fetch(
+          `${API_URL}/api/videos/${video.id}/thumbnail`,
+          {
+            credentials: "include", // 🔥 CLAVE
+          }
+        );
           if(!response.ok){
             console.error("Error cargando el thumnail");
             return;

@@ -1,13 +1,21 @@
 import { Navigate } from "react-router-dom";
-import { getToken } from "../services/AuthService";
+import { useEffect, useState } from "react";
+import { checkAuth } from "../services/AuthService";
 import type { JSX } from "react";
- 
-export function PrivateRoute({ children }: { children: JSX.Element}){
-    const token = getToken();   
 
-    if(!token){
-        return <Navigate to="/login"/>
-    }
+export function PrivateRoute({ children }: { children: JSX.Element }) {
+  const [loading, setLoading] = useState(true);
+  const [authenticated, setAuthenticated] = useState(false);
 
-    return children;
+  useEffect(() => {
+    checkAuth()
+      .then(setAuthenticated)
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <div>Cargando sesión...</div>;
+
+  if (!authenticated) return <Navigate to="/login" />;
+
+  return children;
 }

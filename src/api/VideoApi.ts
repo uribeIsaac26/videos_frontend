@@ -1,39 +1,29 @@
 import type { Video } from "../types/Video";
-import { getToken } from "../services/AuthService";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const BASE_URL = `${API_URL}/api/videos`;
-
-function getAuthHeaders(){
-  const token = getToken();
-
-  return {
-    Authorization: `Bearer ${token}`
-  }
-}
 
 export async function getAllVideos(
   page: number,
   size: number
 ): Promise<any> {
-    const response = await fetch(
-      `${BASE_URL}?page=${page}&size=${size}&sort=id,desc`, {
-      headers: {
-        ...getAuthHeaders(),
-      },
-    });
 
-    if(!response.ok){
-      if(response.status === 401){
-        localStorage.removeItem("token")
-        window.location.href = "/login"
-      }
-        throw new Error("Error al obtener los videos")
+  const response = await fetch(
+    `${BASE_URL}?page=${page}&size=${size}&sort=id,desc`,
+    {
+      credentials: "include", // 🔥 CLAVE
     }
+  );
 
-    const data: Video[] = await response.json();
+  if (!response.ok) {
+    if (response.status === 401) {
+      window.location.href = "/login";
+    }
+    throw new Error("Error al obtener los videos");
+  }
 
-    return data;
+  const data: Video[] = await response.json();
+  return data;
 }
 
 export function uploadVideo(
@@ -57,11 +47,7 @@ export function uploadVideo(
 
     xhr.open("POST", BASE_URL);
 
-    // Auth header
-    const token = getToken();
-    if (token) {
-      xhr.setRequestHeader("Authorization", `Bearer ${token}`);
-    }
+      xhr.withCredentials = true;
 
     // 🔥 Progreso
     xhr.upload.onprogress = (event) => {
@@ -93,12 +79,13 @@ export async function deleteVideo(id:number) {
 
   const response = await fetch(`${BASE_URL}/${id}`, {
     method: "DELETE",
-    headers:{
-      ...getAuthHeaders(),
-    }
+    credentials: "include"
   });
 
-  if(!response.ok){
+   if (!response.ok) {
+    if (response.status === 401) {
+      window.location.href = "/login";
+    }
     throw new Error("No se pudo eliminar el video");
   }
 }

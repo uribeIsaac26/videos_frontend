@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+
 import { useNavigate, useParams } from "react-router-dom";
-import { getToken } from "../services/AuthService";
 import { deleteVideo } from "../api/VideoApi";
 import { useSearchParams } from "react-router-dom";
 
@@ -12,7 +11,7 @@ function VideoPlayerPage() {
   const [searchParams] = useSearchParams();
   const page = searchParams.get("page") || "0";
 
-  const [videoSrc, setVideoSrc] = useState<string | null>(null);
+  const videoUrl = `${API_URL}/api/videos/${id}/video`;
 
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
@@ -30,39 +29,6 @@ function VideoPlayerPage() {
     }
   };
 
-  useEffect(() => {
-    const fetchVideo = async () => {
-      const token = getToken();
-
-      const response = await fetch(
-        `${API_URL}/api/videos/${id}/video`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
-      if (!response.ok) {
-        console.error("Error cargando el video");
-        return;
-      }
-
-      const blob = await response.blob();
-      const videoUrl = URL.createObjectURL(blob);
-
-      setVideoSrc(videoUrl)
-    };
-
-    fetchVideo();
-
-    return () => {
-      if (videoSrc) {
-        URL.revokeObjectURL(videoSrc);
-      }
-    }
-  }, [id])
-
   return (
     <div className="video-player-page">
       <button className="back-button"
@@ -72,12 +38,11 @@ function VideoPlayerPage() {
 
       <h1 className="player-title">Reproduciendo video</h1>
       <div className="video-container">
-
-        {videoSrc ? (
-          <video className="video-player" controls src={videoSrc} />
-        ) : (
-          <p>Cargando Video..</p>
-        )}
+        <video
+          className="video-player"
+          controls
+          src={videoUrl}
+        />
       </div>
       <button className="back-button" onClick={handleDelete}>
         Eliminar Video
