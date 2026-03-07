@@ -68,7 +68,7 @@ function UploadVideoPage() {
 
     setIsUploading(true);
 
-    const MAX_CONCURRENT = 10;
+    const MAX_CONCURRENT = 20;
 
     for (let i = 0; i < videos.length; i += MAX_CONCURRENT) {
       const chunk = videos.slice(i, i + MAX_CONCURRENT);
