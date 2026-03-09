@@ -288,3 +288,8 @@ h1 {
   border-radius: 4px;
   transition: width 0.3s ease;
 }
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

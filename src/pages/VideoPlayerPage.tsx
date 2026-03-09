@@ -34,28 +34,28 @@ function VideoPlayerPage() {
   };
 
   const nextVideo = () => {
-  if (!videos) return;
+    if (!videos) return;
 
-  if (index < videos.length - 1) {
-    const next = videos[index + 1];
+    if (index < videos.length - 1) {
+      const next = videos[index + 1];
 
-    navigate(`/videos/${next.id}?page=${page}`, {
-      state: { videos, index: index + 1 }
-    });
-  }
-};
+      navigate(`/videos/${next.id}?page=${page}`, {
+        state: { videos, index: index + 1 }
+      });
+    }
+  };
 
-const previousVideo = () => {
-  if (!videos) return;
+  const previousVideo = () => {
+    if (!videos) return;
 
-  if (index > 0) {
-    const prev = videos[index - 1];
+    if (index > 0) {
+      const prev = videos[index - 1];
 
-    navigate(`/videos/${prev.id}?page=${page}`, {
-      state: { videos, index: index - 1 }
-    });
-  }
-};
+      navigate(`/videos/${prev.id}?page=${page}`, {
+        state: { videos, index: index - 1 }
+      });
+    }
+  };
 
   return (
     <div className="video-player-page">
@@ -66,7 +66,11 @@ const previousVideo = () => {
 
       <h1 className="player-title">Reproduciendo video</h1>
       <button className="back-button" onClick={previousVideo}>⏮ Anterior</button>
-      <button className="back-button" onClick={nextVideo}>⏭ Siguiente</button>
+      <button 
+      className="back-button" 
+      onClick={nextVideo}
+      disabled={!videos || index === videos.length - 1}
+      >⏭ Siguiente</button>
       <div className="video-container">
         <video
           className="video-player"
