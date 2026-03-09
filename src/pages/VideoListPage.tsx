@@ -16,9 +16,9 @@ function videoListPage() {
     useEffect(() => {
         fetchVideos(page);
         window.scrollTo({
-        top: 0,
-        behavior: "smooth" // puedes quitar smooth si no quieres animación
-    });
+            top: 0,
+            behavior: "smooth" // puedes quitar smooth si no quieres animación
+        });
     }, [page]);
 
     const handleLogout = () => {
@@ -68,8 +68,13 @@ function videoListPage() {
                 </button>
             </div>
             <div className="video-grid">
-                {videos.map((video) => (
-                    <VideoCard key={video.id} video={video} currentPage={page} />
+                {videos.map((video, index) => (
+                    <VideoCard
+                        key={video.id}
+                        video={video}
+                        currentPage={page}
+                        videos={videos}
+                        index={index} />
                 ))}
             </div>
             <div className="pagination-container">

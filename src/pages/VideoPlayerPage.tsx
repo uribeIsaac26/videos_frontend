@@ -2,6 +2,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { deleteVideo } from "../api/VideoApi";
 import { useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -10,6 +11,9 @@ function VideoPlayerPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const page = searchParams.get("page") || "0";
+
+  const location = useLocation();
+  const { videos, index } = location.state || {};
 
   const videoUrl = `${API_URL}/api/videos/${id}/video`;
 
@@ -29,6 +33,30 @@ function VideoPlayerPage() {
     }
   };
 
+  const nextVideo = () => {
+  if (!videos) return;
+
+  if (index < videos.length - 1) {
+    const next = videos[index + 1];
+
+    navigate(`/videos/${next.id}?page=${page}`, {
+      state: { videos, index: index + 1 }
+    });
+  }
+};
+
+const previousVideo = () => {
+  if (!videos) return;
+
+  if (index > 0) {
+    const prev = videos[index - 1];
+
+    navigate(`/videos/${prev.id}?page=${page}`, {
+      state: { videos, index: index - 1 }
+    });
+  }
+};
+
   return (
     <div className="video-player-page">
       <button className="back-button"
@@ -37,6 +65,8 @@ function VideoPlayerPage() {
       </button>
 
       <h1 className="player-title">Reproduciendo video</h1>
+      <button className="back-button" onClick={previousVideo}>⏮ Anterior</button>
+      <button className="back-button" onClick={nextVideo}>⏭ Siguiente</button>
       <div className="video-container">
         <video
           className="video-player"
