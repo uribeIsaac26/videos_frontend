@@ -293,3 +293,74 @@ button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* Contenedor principal */
+.user-menu-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* El botón que abre el menú */
+.menu-toggle-button {
+    background-color: #2c3e50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.menu-toggle-button:hover {
+    background-color: #34495e;
+}
+
+/* La caja del menú desplegable */
+.dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 10px); /* Separación del botón */
+    background-color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    z-index: 1000;
+    min-width: 180px;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0;
+    border: 1px solid #eee;
+}
+
+/* Items individuales del menú */
+.dropdown-item {
+    padding: 12px 16px;
+    text-align: left;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* Línea divisoria */
+.dropdown-divider {
+    height: 1px;
+    background-color: #eee;
+    margin: 8px 0;
+}
+
+/* Item específico de cerrar sesión */
+.logout-item {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.logout-item:hover {
+    background-color: #fff5f5;
+}

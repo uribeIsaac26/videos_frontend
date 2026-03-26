@@ -4,6 +4,7 @@ import VideoPlayerPage from "./pages/VideoPlayerPage";
 import UploadVideoPage from "./pages/UploadVideoPage";
 import Login from "./pages/Login";
 import { PrivateRoute } from "./components/PrivateRoute";
+import TagsPage from "./pages/TagsPage";
 
 function App() {
   return (
@@ -33,6 +34,15 @@ function App() {
         {
           <PrivateRoute>
             <UploadVideoPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/tags"
+        element=
+        {
+          <PrivateRoute>
+            <TagsPage />
           </PrivateRoute>
         }
       />

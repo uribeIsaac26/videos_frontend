@@ -2,15 +2,14 @@ import { useEffect, useState } from "react";
 import type { Video } from "../types/Video";
 import { getAllVideos } from "../api/VideoApi";
 import VideoCard from "../components/VideoCard";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { logout } from "../services/AuthService";
+import { useSearchParams } from "react-router-dom";
+import UserMenu from "../components/UserMenu"; // Nuevo componente
 
 function videoListPage() {
     const [videos, setVideos] = useState<Video[]>([]);
     const [searchParams, setSearchParams] = useSearchParams();
     const page = Number(searchParams.get("page")) || 0;
     const [totalPages, setTotalPages] = useState(0);
-    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -20,11 +19,6 @@ function videoListPage() {
             behavior: "smooth" // puedes quitar smooth si no quieres animación
         });
     }, [page]);
-
-    const handleLogout = () => {
-        logout();
-        navigate("/login")
-    }
 
     const fetchVideos = async (currentPage: number) => {
         try {
@@ -39,13 +33,10 @@ function videoListPage() {
 
     return (
         <div className="page-container">
-            <h1>Videos</h1>
-            <button className="back-button" onClick={() => navigate("/upload")}>
-                Upload Videos
-            </button>
-            <button className="back-button" onClick={handleLogout}>
-                Cerrar Sesion
-            </button>
+            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+                <h1>Videos</h1>
+                <UserMenu />
+            </header>
             <div className="pagination-container">
                 <button
                     className="pagination-button"
