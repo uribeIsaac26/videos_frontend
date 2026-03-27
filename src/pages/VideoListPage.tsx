@@ -3,14 +3,31 @@ import type { Video } from "../types/Video";
 import { getAllVideos } from "../api/VideoApi";
 import VideoCard from "../components/VideoCard";
 import { useSearchParams } from "react-router-dom";
-import UserMenu from "../components/UserMenu"; // Nuevo componente
+import UserMenu from "../components/UserMenu";
 
 function videoListPage() {
     const [videos, setVideos] = useState<Video[]>([]);
     const [searchParams, setSearchParams] = useSearchParams();
     const page = Number(searchParams.get("page")) || 0;
     const [totalPages, setTotalPages] = useState(0);
+    const [inputPage, setInputPage] = useState((page + 1).toString());
 
+
+    useEffect(() => {
+        setInputPage((page + 1).toString());
+    }, [page]);
+
+    const handlePageJump = (e: React.FormEvent) => {
+        e.preventDefault();
+        const newPage = parseInt(inputPage) - 1; // Ajustamos a base 0 para el backend
+
+        if (!isNaN(newPage) && newPage >= 0 && newPage < totalPages) {
+            setSearchParams({ page: newPage.toString() });
+        } else {
+            // Si el número no es válido, regresamos al valor actual
+            setInputPage((page + 1).toString());
+        }
+    };
 
     useEffect(() => {
         fetchVideos(page);
@@ -46,10 +63,19 @@ function videoListPage() {
                     ◀ Anterior
                 </button>
 
-                <span className="pagination-info">
-                    Página {page + 1} de {totalPages}
-                </span>
-
+                <form className="pagination-jump-form" onSubmit={handlePageJump}>
+                    <span>Página</span>
+                    <input
+                        type="number"
+                        className="pagination-input"
+                        value={inputPage}
+                        onChange={(e) => setInputPage(e.target.value)}
+                        onBlur={handlePageJump} // También salta si el usuario hace clic fuera
+                        min="1"
+                        max={totalPages}
+                    />
+                    <span>de {totalPages}</span>
+                </form>
                 <button
                     className="pagination-button"
                     disabled={page + 1 === totalPages}
@@ -77,9 +103,19 @@ function videoListPage() {
                     ◀ Anterior
                 </button>
 
-                <span className="pagination-info">
-                    Página {page + 1} de {totalPages}
-                </span>
+                <form className="pagination-jump-form" onSubmit={handlePageJump}>
+                    <span>Página</span>
+                    <input
+                        type="number"
+                        className="pagination-input"
+                        value={inputPage}
+                        onChange={(e) => setInputPage(e.target.value)}
+                        onBlur={handlePageJump} // También salta si el usuario hace clic fuera
+                        min="1"
+                        max={totalPages}
+                    />
+                    <span>de {totalPages}</span>
+                </form>
 
                 <button
                     className="pagination-button"

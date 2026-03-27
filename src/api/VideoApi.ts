@@ -47,7 +47,7 @@ export function uploadVideo(
 
     xhr.open("POST", BASE_URL);
 
-      xhr.withCredentials = true;
+    xhr.withCredentials = true;
 
     // 🔥 Progreso
     xhr.upload.onprogress = (event) => {
@@ -75,14 +75,34 @@ export function uploadVideo(
   });
 }
 
-export async function deleteVideo(id:number) {
+export async function addTagsToVideo(videoId: number, tagIds: number[]): Promise<any> {
+  const response = await fetch(`${BASE_URL}/tags`, {
+    method: 'PUT',
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({ videoId: videoId, tagIds: tagIds })
+  });
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      window.location.href = "/login";
+    }
+    throw new Error("No se pudo eliminar el video");
+  }
+
+  return response.json();
+}
+
+export async function deleteVideo(id: number) {
 
   const response = await fetch(`${BASE_URL}/${id}`, {
     method: "DELETE",
     credentials: "include"
   });
 
-   if (!response.ok) {
+  if (!response.ok) {
     if (response.status === 401) {
       window.location.href = "/login";
     }

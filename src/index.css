@@ -46,21 +46,39 @@ h1 {
   font-weight: 500;
 }
 
+/* Estilos page player */
+
 .video-player-page {
   min-height: 100vh;
   background-color: #0f0f0f;
   color: white;
-  padding: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra todo horizontalmente */
 }
 
 .video-player {
   width: 100%;
   height: auto;
-  max-width: 100%;
+  max-height: 75vh; /* 🔥 Clave: No deja que el video sea más alto que la pantalla */
   display: block;
-  border-radius: 12px;
+  outline: none;
 }
 
+.player-controls {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+  width: 100%;
+  max-width: 1000px;
+  justify-content: space-between;
+}
+
+.nav-group {
+  display: flex;
+  gap: 10px;
+}
 
 .back-button {
   background-color: #272727;
@@ -86,8 +104,14 @@ h1 {
 /* 🔥 Contenedor flexible */
 .video-container {
   width: 100%;
-  max-width: 900px;
+  max-width: 1000px; /* Un poco más ancho para PC */
   margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  background-color: black; /* Fondo negro por si el video es vertical */
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
 .video-element {
@@ -98,19 +122,18 @@ h1 {
 }
 
 @media (max-width: 768px) {
-
   .video-player-page {
     padding: 10px;
   }
-
-  .video-container {
-    max-width: 100%;
+  
+  .video-player {
+    max-height: 60vh; /* Más pequeño en móvil para ver los botones abajo */
   }
 
-  .video-element {
-    border-radius: 8px;
+  .player-title {
+    font-size: 18px;
+    text-align: center;
   }
-
 }
 
 .upload-page {
@@ -363,4 +386,101 @@ button:disabled {
 
 .logout-item:hover {
     background-color: #fff5f5;
+}
+
+.tag-card {
+    background: black;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.8);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 1000;
+}
+
+.tag-modal {
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%; max-width: 400px;
+}
+
+.tag-selection-grid {
+  display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0;
+}
+
+.tag-pill {
+  background: #333; border: none; color: white;
+  padding: 8px 12px; border-radius: 20px; cursor: pointer;
+}
+
+.tag-pill.active {
+  background: #ff0000; /* O el color de tu app */
+  color: white;
+}
+
+.modal-footer {
+  display: flex; justify-content: flex-end; gap: 10px;
+}
+
+.save-btn {
+  background: #007bff; color: white; border: none;
+  padding: 8px 16px; border-radius: 4px; cursor: pointer;
+}
+
+.current-video-tags {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+  max-width: 1000px;
+}
+
+.video-tag-badge {
+  background-color: #272727;
+  color: #3ea6ff; /* Azul tipo link o blanco */
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  border: 1px solid #3f3f3f;
+}
+
+.pagination-jump-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    font-size: 14px;
+}
+
+.pagination-input {
+    width: 50px; /* Suficiente para 3 o 4 dígitos */
+    background: #1a1a1a;
+    border: 1px solid #3f3f3f;
+    color: #3ea6ff; /* Un color que resalte */
+    text-align: center;
+    padding: 4px;
+    border-radius: 4px;
+    font-weight: bold;
+    outline: none;
+}
+
+.pagination-input:focus {
+    border-color: #3ea6ff;
+}
+
+.pagination-input::-webkit-inner-spin-button,
+.pagination-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }

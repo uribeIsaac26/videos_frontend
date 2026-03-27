@@ -4,60 +4,60 @@ import { useEffect, useState } from "react";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-interface Props{
-    video: Video;
-    currentPage: number;
-    videos: Video[];
-    index: number;
+interface Props {
+  video: Video;
+  currentPage: number;
+  videos: Video[];
+  index: number;
 }
 
-function VideoCard({ video, currentPage, videos, index }: Props){
+function VideoCard({ video, currentPage, videos, index }: Props) {
 
-    const navigate = useNavigate();
-    const [thumbnailSrc, setThumbnailSrc] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const [thumbnailSrc, setThumbnailSrc] = useState<string | null>(null);
 
-    const handleClick = () => {
-        navigate(`/videos/${video.id}?page=${currentPage}`, {
-          state: {
-            videos,
-            index
-          }
-        }
-        );
-    };
+  const handleClick = () => {
+    navigate(`/videos/${video.id}?page=${currentPage}`, {
+      state: {
+        videos,
+        index
+      }
+    }
+    );
+  };
 
-    useEffect(() => {
-      const fetchThumnail = async () => {
-        try{
-           const response = await fetch(
+  useEffect(() => {
+    const fetchThumnail = async () => {
+      try {
+        const response = await fetch(
           `${API_URL}/api/videos/${video.id}/thumbnail`,
           {
             credentials: "include", // 🔥 CLAVE
           }
         );
-          if(!response.ok){
-            console.error("Error cargando el thumnail");
-            return;
-          }
-          const blob = await response.blob();
-          const thumbnailUrl = URL.createObjectURL(blob);
-          setThumbnailSrc(thumbnailUrl);
-        }catch(error){
-          console.error("Error en fetch thumbnail", error);
+        if (!response.ok) {
+          console.error("Error cargando el thumnail");
+          return;
         }
-      };
+        const blob = await response.blob();
+        const thumbnailUrl = URL.createObjectURL(blob);
+        setThumbnailSrc(thumbnailUrl);
+      } catch (error) {
+        console.error("Error en fetch thumbnail", error);
+      }
+    };
 
-      fetchThumnail();
-      return ()=> {
-        if(thumbnailSrc){
-          URL.revokeObjectURL(thumbnailSrc)
-        }
-      };;
-    }, [video.id]);
+    fetchThumnail();
+    return () => {
+      if (thumbnailSrc) {
+        URL.revokeObjectURL(thumbnailSrc)
+      }
+    };;
+  }, [video.id]);
 
-    return (
+  return (
     <div className="video-card" onClick={handleClick} style={{ cursor: "pointer" }}>
-       {thumbnailSrc ? (
+      {thumbnailSrc ? (
         <img
           className="thumbnail"
           src={thumbnailSrc}
@@ -66,8 +66,19 @@ function VideoCard({ video, currentPage, videos, index }: Props){
       ) : (
         <div className="thumbnail-placeholder">Cargando...</div>
       )}
-      
+
       <h3 className="video-title">{video.title}</h3>
+      <div className="video-tags-container">
+        {video.tags && video.tags.length > 0 ? (
+          video.tags.map((tag) => (
+            <span key={tag.id} className="video-tag-badge">
+              {tag.name}
+            </span>
+          ))
+        ) : (
+          <span className="no-tags">Sin etiquetas</span>
+        )}
+      </div>
     </div>
   );
 }

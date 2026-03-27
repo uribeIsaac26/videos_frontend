@@ -22,6 +22,15 @@ const UserMenu = () => {
 
             {isOpen && (
                 <div className="dropdown-menu">
+
+                    <button
+                        className="dropdown-item"
+                        onClick={() => navigate("/")}>
+
+                        🔙 Inicio
+
+                    </button>
+
                     <button 
                         className="dropdown-item" 
                         onClick={() => navigate("/upload")}

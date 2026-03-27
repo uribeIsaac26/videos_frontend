@@ -3,6 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { deleteVideo } from "../api/VideoApi";
 import { useSearchParams } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { useState, useEffect } from "react"
+import { addTagsToVideo } from "../api/VideoApi";
+import { getAllTags } from "../api/TagApi";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -16,6 +19,49 @@ function VideoPlayerPage() {
   const { videos, index } = location.state || {};
 
   const videoUrl = `${API_URL}/api/videos/${id}/video`;
+
+  const [showTagModal, setShowTagModal] = useState(false);
+  const [availableTags, setAvailableTags] = useState<any[]>([]);
+  const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
+
+
+  useEffect(() => {
+    if (showTagModal) {
+      getAllTags(0, 1000).then(response => {
+        const tags = response.content || response;
+        setAvailableTags(tags)
+      }
+      ).catch(console.error);
+    }
+  }, [showTagModal]);
+
+  const handleSaveTags = async () => {
+    try {
+      const updatedVideo = await addTagsToVideo(Number(id), selectedTagIds);
+      if (videos) {
+        const newVideos = [...videos];
+        newVideos[index] = updatedVideo; // El backend nos devuelve el video con tags
+
+        // Actualizamos el estado de la navegación para que si el usuario 
+        // vuelve atrás o sigue navegando, los tags persistan.
+        navigate(location.pathname, {
+          state: { videos: newVideos, index },
+          replace: true // 'replace' evita que se cree un nuevo historial
+        });
+      }
+
+      setShowTagModal(false);
+      // Opcional: podrías refrescar los datos del video aquí
+    } catch (error) {
+      alert("Error al guardar tags");
+    }
+  };
+
+  const toggleTag = (tagId: number) => {
+    setSelectedTagIds(prev =>
+      prev.includes(tagId) ? prev.filter(i => i !== tagId) : [...prev, tagId]
+    );
+  };
 
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
@@ -59,28 +105,84 @@ function VideoPlayerPage() {
 
   return (
     <div className="video-player-page">
-      <button className="back-button"
-        onClick={() => navigate(`/?page=${page}`)}>
-        Volver
-      </button>
+      <header style={{ width: '100%', maxWidth: '1000px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <button className="back-button" onClick={() => navigate(`/?page=${page}`)}>
+          ✕ Salir
+        </button>
+        <div style={{ width: '80px' }}></div> {/* Espaciador para centrar el título */}
+        <button
+          className="back-button tag-manage-btn"
+          onClick={() => setShowTagModal(true)}
+        >
+          🏷️ Gestionar Tags
+        </button>
+      </header>
 
-      <h1 className="player-title">Reproduciendo video</h1>
-      <button className="back-button" onClick={previousVideo}>⏮ Anterior</button>
-      <button 
-      className="back-button" 
-      onClick={nextVideo}
-      disabled={!videos || index === videos.length - 1}
-      >⏭ Siguiente</button>
+      <h1 className="player-title">
+          {videos[index]?.title || "Reproduciendo video"}
+        </h1>
+        <div className="current-video-tags">
+          {videos[index]?.tags?.map((tag: any) => (
+            <span key={tag.id} className="video-tag-badge">
+              {tag.name}
+            </span>
+          ))}
+        </div>
+
       <div className="video-container">
         <video
           className="video-player"
           controls
+          autoPlay
           src={videoUrl}
         />
       </div>
-      <button className="back-button" onClick={handleDelete}>
-        Eliminar Video
-      </button>
+
+      <div className="player-controls">
+        <div className="nav-group">
+          <button
+            className="back-button"
+            onClick={previousVideo}
+            disabled={!videos || index === 0}
+          >
+            ⏮ Anterior
+          </button>
+          <button
+            className="back-button"
+            onClick={nextVideo}
+            disabled={!videos || index === videos.length - 1}
+          >
+            Siguiente ⏭
+          </button>
+        </div>
+
+        <button className="back-button delete-button" onClick={handleDelete}>
+          🗑️ Eliminar
+        </button>
+      </div>
+
+      {showTagModal && (
+        <div className="modal-overlay">
+          <div className="tag-modal">
+            <h3>Seleccionar Tags</h3>
+            <div className="tag-selection-grid">
+              {availableTags.map(tag => (
+                <button
+                  key={tag.id}
+                  className={`tag-pill ${selectedTagIds.includes(tag.id) ? 'active' : ''}`}
+                  onClick={() => toggleTag(tag.id)}
+                >
+                  {tag.name}
+                </button>
+              ))}
+            </div>
+            <div className="modal-footer">
+              <button onClick={() => setShowTagModal(false)}>Cancelar</button>
+              <button className="save-btn" onClick={handleSaveTags}>Guardar Cambios</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
