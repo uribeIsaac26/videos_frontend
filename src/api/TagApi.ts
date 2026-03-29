@@ -25,23 +25,33 @@ export async function getAllTags(
     return data;
 }
 
+export const getTagById = async (id: number) => {
+    const response = await fetch(`${BASE_URL}/${id}`,
+        {
+            credentials: "include",
+        }
+    );
+    if (!response.ok) throw new Error("Error al obtener el tag");
+    return response.json();
+}
+
 export async function createTag(
     name: string,
-): Promise<any>{
+): Promise<any> {
     const response = await fetch(`${BASE_URL}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({ name: name})
+        body: JSON.stringify({ name: name })
     });
 
     if (!response.ok) {
-    if (response.status === 401) {
-      window.location.href = "/login";
-    }
-    throw new Error("No se pudo eliminar el video");
+        if (response.status === 401) {
+            window.location.href = "/login";
+        }
+        throw new Error("No se pudo eliminar el video");
     }
 
     return response.json();

@@ -26,6 +26,28 @@ export async function getAllVideos(
   return data;
 }
 
+export async function getVideosByTag(
+  tagId: string,
+  page: number,
+  size: number): Promise<any> {
+    const response = await fetch(
+      `${BASE_URL}/tag/${tagId}?page=${page}&size=${size}&sort=id,desc`,
+      {
+        credentials: "include",
+      }
+    );
+
+    if (!response.ok) {
+    if (response.status === 401) {
+      window.location.href = "/login";
+    }
+    throw new Error("Error al obtener los videos");
+  }
+
+  const data: Video[] = await response.json();
+  return data;
+}
+
 export function uploadVideo(
   title: string,
   videoFile: File,
@@ -76,7 +98,7 @@ export function uploadVideo(
 }
 
 export async function addTagsToVideo(videoId: number, tagIds: number[]): Promise<any> {
-  const response = await fetch(`${BASE_URL}/tags`, {
+  const response = await fetch(`${BASE_URL}/tag`, {
     method: 'PUT',
     headers: {
       "Content-Type": "application/json",
