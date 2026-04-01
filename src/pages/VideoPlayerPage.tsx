@@ -35,6 +35,15 @@ function VideoPlayerPage() {
     }
   }, [showTagModal]);
 
+  useEffect(() => {
+    if (videos && videos[index]) {
+      const currentVideoTags = videos[index].tags || [];
+      // Extraemos solo los IDs del video actual
+      const currentTagIds = currentVideoTags.map((t: any) => t.id);
+      setSelectedTagIds(currentTagIds);
+    }
+  }, [index, videos, showTagModal]);
+
   const handleSaveTags = async () => {
     try {
       const updatedVideo = await addTagsToVideo(Number(id), selectedTagIds);
@@ -119,15 +128,15 @@ function VideoPlayerPage() {
       </header>
 
       <h1 className="player-title">
-          {videos[index]?.title || "Reproduciendo video"}
-        </h1>
-        <div className="current-video-tags">
-          {videos[index]?.tags?.map((tag: any) => (
-            <span key={tag.id} className="video-tag-badge">
-              {tag.name}
-            </span>
-          ))}
-        </div>
+        {videos[index]?.title || "Reproduciendo video"}
+      </h1>
+      <div className="current-video-tags">
+        {videos[index]?.tags?.map((tag: any) => (
+          <span key={tag.id} className="video-tag-badge">
+            {tag.name}
+          </span>
+        ))}
+      </div>
 
       <div className="video-container">
         <video

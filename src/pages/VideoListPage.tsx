@@ -98,7 +98,11 @@ function videoListPage() {
                 <button
                     className="pagination-button"
                     disabled={page === 0}
-                    onClick={() => setSearchParams({ page: (page - 1).toString() })}
+                    onClick={() => {
+                        const newParams: any = { page: (page - 1).toString() };
+                        if (tagId) newParams.tag = tagId; // 👈 Mantenemos el tag si existe
+                        setSearchParams(newParams);
+                    }}
                 >
                     ◀ Anterior
                 </button>
@@ -119,7 +123,11 @@ function videoListPage() {
                 <button
                     className="pagination-button"
                     disabled={page + 1 === totalPages}
-                    onClick={() => setSearchParams({ page: (page + 1).toString() })}
+                    onClick={() => {
+                        const newParams: any = { page: (page + 1).toString() };
+                        if (tagId) newParams.tag = tagId; // 👈 Mantenemos el tag si existe
+                        setSearchParams(newParams);
+                    }}
                 >
                     Siguiente ▶
                 </button>
@@ -138,7 +146,11 @@ function videoListPage() {
                 <button
                     className="pagination-button"
                     disabled={page === 0}
-                    onClick={() => setSearchParams({ page: (page - 1).toString() })}
+                    onClick={() => {
+                        const newParams: any = { page: (page - 1).toString() };
+                        if (tagId) newParams.tag = tagId; // 👈 Mantenemos el tag si existe
+                        setSearchParams(newParams);
+                    }}
                 >
                     ◀ Anterior
                 </button>
@@ -160,7 +172,11 @@ function videoListPage() {
                 <button
                     className="pagination-button"
                     disabled={page + 1 === totalPages}
-                    onClick={() => setSearchParams({ page: (page + 1).toString() })}
+                    onClick={() => {
+                        const newParams: any = { page: (page + 1).toString() };
+                        if (tagId) newParams.tag = tagId; // 👈 Mantenemos el tag si existe
+                        setSearchParams(newParams);
+                    }}
                 >
                     Siguiente ▶
                 </button>
