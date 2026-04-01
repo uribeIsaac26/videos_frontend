@@ -51,11 +51,16 @@ function VideoPlayerPage() {
         const newVideos = [...videos];
         newVideos[index] = updatedVideo; // El backend nos devuelve el video con tags
 
+        const currentQuery = searchParams.toString();
+
         // Actualizamos el estado de la navegación para que si el usuario 
         // vuelve atrás o sigue navegando, los tags persistan.
-        navigate(location.pathname, {
+        navigate({
+          pathname: location.pathname,
+          search: `?${currentQuery}`
+        }, {
           state: { videos: newVideos, index },
-          replace: true // 'replace' evita que se cree un nuevo historial
+          replace: true
         });
       }
 
