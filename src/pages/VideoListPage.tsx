@@ -16,10 +16,18 @@ function videoListPage() {
     const tagId = searchParams.get("tag"); // 👈 Detectamos el tag
     const navigate = useNavigate();
     const [currentTagName, setCurrentTagName] = useState<string | null>(null);
+    const sortBy = searchParams.get("sort") || "id,desc";
 
     useEffect(() => {
         setInputPage((page + 1).toString());
     }, [page]);
+
+    const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const newSort = e.target.value;
+        const params: any = { page: "0", sort: newSort }; // Al ordenar, reiniciamos a página 0
+        if (tagId) params.tag = tagId;
+        setSearchParams(params);
+    };
 
     const handlePageJump = (e: React.FormEvent) => {
         e.preventDefault();
@@ -41,20 +49,20 @@ function videoListPage() {
     };
 
     useEffect(() => {
-        fetchVideos(page, tagId);
+        fetchVideos(page, tagId, sortBy);
         window.scrollTo({
             top: 0,
             behavior: "smooth" // puedes quitar smooth si no quieres animación
         });
-    }, [page, tagId]);
+    }, [page, tagId, sortBy]);
 
-    const fetchVideos = async (currentPage: number, currentTag: string | null) => {
+    const fetchVideos = async (currentPage: number, currentTag: string | null, currentSort: string) => {
         try {
             let data;
             if (currentTag) {
-                data = await getVideosByTag(currentTag, currentPage, 10);
+                data = await getVideosByTag(currentTag, currentPage, 10, currentSort);
             } else {
-                data = await getAllVideos(currentPage, 10);
+                data = await getAllVideos(currentPage, 10, currentSort);
             }
             setVideos(data.content);
             setTotalPages(data.totalPages);
@@ -76,9 +84,26 @@ function videoListPage() {
 
     return (
         <div className="page-container">
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                <h1>Videos</h1>
-                <UserMenu />
+            <header className="main-header">
+                <div className="header-top-row">
+                    <div className="title-filter-group">
+                        <h1>Videos</h1>
+                        <select
+                            className="sort-select"
+                            value={sortBy}
+                            onChange={handleSortChange}
+                        >
+                            <option value="id,desc">Recientes</option>
+                            <option value="size,desc">Pesados ⬇️</option>
+                            <option value="size,asc">Ligeros ⬆️</option>
+                            <option value="title,asc">A-Z</option>
+                        </select>
+                    </div>
+
+                    <div className="menu-container">
+                        <UserMenu />
+                    </div>
+                </div>
             </header>
             {tagId && (
                 <div className="filter-status-bar">

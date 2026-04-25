@@ -12,7 +12,7 @@ function tagListPage() {
     const [searchParams, setSearchParams] = useSearchParams();
     const page = Number(searchParams.get("page")) || 0;
     const [totalPages, setTotalPages] = useState(0);
-
+    const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -25,13 +25,30 @@ function tagListPage() {
 
     const fetchTags = async (currentPage: number) => {
         try {
-            const data = await getAllTags(currentPage, 10);
+            const data = await getAllTags(currentPage, 20);
             setTags(data.content);
             setTotalPages(data.totalPages);
         } catch (error) {
             console.error("Error cargando videos ", error);
         }
     };
+
+    // Función para marcar/desmarcar
+    const toggleTagSelection = (tagId: number) => {
+        setSelectedTagIds(prev => 
+            prev.includes(tagId) 
+                ? prev.filter(id => id !== tagId) 
+                : [...prev, tagId]
+        );
+    };
+
+    // Función para ir a la galería con los filtros
+    const handleApplyFilters = () => {
+        if (selectedTagIds.length > 0) {
+            // Unimos los IDs por comas: ?tag=1,2,3
+            navigate(`/?tag=${selectedTagIds.join(",")}`);
+        }
+        };
 
     return (
         <div className="page-container">
@@ -42,6 +59,16 @@ function tagListPage() {
                 </button>
                 <UserMenu />
             </header>
+
+            {selectedTagIds.length > 0 && (
+                <div className="floating-filter-bar">
+                    <span>{selectedTagIds.length} seleccionados</span>
+                    <div className="action-buttons">
+                        <button className="clear-btn" onClick={() => setSelectedTagIds([])}>Limpiar</button>
+                        <button className="apply-btn" onClick={handleApplyFilters}>Ver Videos 🎬</button>
+                    </div>
+                </div>
+            )}
 
             <div className="pagination-container">
                 <button
@@ -65,11 +92,17 @@ function tagListPage() {
                 </button>
             </div>
 
-            <div className="video-grid">
+            <div className="tag-selection-grid">
                 {tags.map((tag) => (
-                    <TagCard
-                        key={tag.id}
-                        tag={tag} />
+                    <div 
+                        key={tag.id} 
+                        className={`tag-card-wrapper ${selectedTagIds.includes(tag.id) ? 'selected' : ''}`}
+                        onClick={() => toggleTagSelection(tag.id)}
+                    >
+                        <TagCard tag={tag} />
+                        {/* Indicador visual de selección */}
+                        {selectedTagIds.includes(tag.id) && <div className="check-mark">✓</div>}
+                    </div>
                 ))}
             </div>
         </div>

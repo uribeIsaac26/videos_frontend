@@ -5,5 +5,6 @@ export interface Video{
     title: string;
     thumbnailUrl: string;
     videoUrl: string;
+    size: number;
     tags: Tag[];
 }

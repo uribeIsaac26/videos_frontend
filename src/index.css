@@ -531,3 +531,158 @@ button:disabled {
 .remove-filter-btn:hover {
     background: rgba(255, 255, 255, 0.3);
 }
+.sort-select {
+    background-color: #1a1a1a;
+    color: #3ea6ff;
+    border: 1px solid #3f3f3f;
+    padding: 6px 12px;
+    border-radius: 20px; /* Estilo píldora como tus botones */
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: bold;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.sort-select:hover {
+    border-color: #3ea6ff;
+    background-color: #252525;
+}
+
+.sort-select option {
+    background-color: #1a1a1a;
+    color: white;
+}
+
+/* Contenedor principal del header */
+.main-header {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.header-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  position: relative; /* Importante para que el hijo se posicione respecto a esto */
+}
+
+.title-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.menu-container {
+  position: relative;
+  z-index: 999; /* Asegura que el menú esté por encima de los videos */
+}
+
+/* --- AJUSTES PARA CELULAR --- */
+@media (max-width: 600px) {
+  .header-top-row {
+    display: grid;
+    grid-template-columns: 1fr auto; /* Título/Filtro ocupan la izquierda, Menú la derecha */
+    gap: 10px;
+  }
+
+  .title-filter-group {
+    flex-direction: column; /* Apila Título y Select uno sobre otro */
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .main-header h1 {
+    font-size: 1.5rem;
+    margin: 0;
+  }
+
+  .sort-select {
+    width: 130px; /* Tamaño fijo para que no empuje el menú */
+    font-size: 0.8rem;
+  }
+
+  /* Si el menú se corta a la IZQUIERDA, dile a tu componente UserMenu 
+     (en su propio CSS) que el desplegable se alinee a la derecha */
+  .user-menu-dropdown { 
+    right: 0 !important; 
+    left: auto !important; 
+    position: absolute;
+    top: 100%;
+    min-width: 150px;
+  }
+}
+
+/* Contenedor de la tarjeta para manejar el estado seleccionado */
+.tag-card-wrapper {
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s, filter 0.2s;
+    border: 2px solid transparent;
+    border-radius: 12px;
+}
+
+.tag-card-wrapper.selected {
+    border-color: #3ea6ff;
+    transform: scale(0.95);
+    filter: brightness(1.2);
+}
+
+.check-mark {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #3ea6ff;
+    color: white;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+
+/* Barra flotante inferior */
+.floating-filter-bar {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e1e1e;
+    padding: 15px 25px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    z-index: 1000;
+    border: 1px solid #333;
+    animation: slideUp 0.3s ease;
+}
+
+.apply-btn {
+    background: #3ea6ff;
+    color: black;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.clear-btn {
+    background: transparent;
+    color: #ff4444;
+    border: 1px solid #ff4444;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+@keyframes slideUp {
+    from { bottom: -100px; }
+    to { bottom: 20px; }
+}

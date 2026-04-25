@@ -5,11 +5,12 @@ const BASE_URL = `${API_URL}/api/videos`;
 
 export async function getAllVideos(
   page: number,
-  size: number
+  size: number,
+  sort: string = "id,desc"
 ): Promise<any> {
 
   const response = await fetch(
-    `${BASE_URL}?page=${page}&size=${size}&sort=id,desc`,
+    `${BASE_URL}?page=${page}&size=${size}&sort=${sort}`,
     {
       credentials: "include", // 🔥 CLAVE
     }
@@ -27,11 +28,25 @@ export async function getAllVideos(
 }
 
 export async function getVideosByTag(
-  tagId: string,
+  tagId: string | number | (string | number)[],
   page: number,
-  size: number): Promise<any> {
+  size: number,
+  sort: string = "id,desc"
+): Promise<any> {
+
+  const params = new URLSearchParams();
+
+  if (Array.isArray(tagId)) {
+    tagId.forEach(id => params.append("tagIds", id.toString()));
+  } else {
+    params.append("tagIds", tagId.toString());
+  }
+  params.append("page", page.toString());
+  params.append("size", size.toString());
+  params.append("sort", sort);
+
     const response = await fetch(
-      `${BASE_URL}/tag/${tagId}?page=${page}&size=${size}&sort=id,desc`,
+      `${BASE_URL}/tags?${params.toString()}`,
       {
         credentials: "include",
       }
