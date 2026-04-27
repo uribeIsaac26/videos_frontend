@@ -37,16 +37,17 @@ export async function getVideosByTag(
   const params = new URLSearchParams();
 
   if (Array.isArray(tagId)) {
-    tagId.forEach(id => params.append("tagIds", id.toString()));
+    // Esto generará: tagIds=2,1
+    params.set("tagIds", tagId.join(",")); 
   } else {
-    params.append("tagIds", tagId.toString());
+    params.set("tagIds", tagId.toString());
   }
-  params.append("page", page.toString());
-  params.append("size", size.toString());
-  params.append("sort", sort);
+  params.set("page", page.toString());
+  params.set("size", size.toString());
+  params.set("sort", sort);
 
     const response = await fetch(
-      `${BASE_URL}/tags?${params.toString()}`,
+      `${BASE_URL}/tag?${params.toString()}`,
       {
         credentials: "include",
       }
