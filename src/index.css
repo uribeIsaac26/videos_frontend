@@ -710,3 +710,25 @@ button:disabled {
     from { bottom: -100px; }
     to { bottom: 20px; }
 }
+.tag-card-wrapper {
+    /* Desactiva el menú contextual de iOS/Android al dejar presionado */
+    -webkit-touch-callout: none; 
+    /* Evita que se seleccione el texto del nombre del tag */
+    user-select: none; 
+    -webkit-user-select: none;
+    
+    position: relative;
+    transition: transform 0.15s ease;
+    touch-action: none; /* Evita que el navegador tome el control del toque */
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Efecto visual de "hundimiento" mientras el usuario presiona */
+.tag-card-wrapper:active {
+    transform: scale(0.94);
+}
+
+.tag-card-wrapper.selected {
+    border: 2px solid #3ea6ff;
+    box-shadow: 0 0 15px rgba(62, 166, 255, 0.3);
+}

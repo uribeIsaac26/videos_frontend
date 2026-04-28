@@ -47,7 +47,7 @@ function videoListPage() {
         const newPage = parseInt(inputPage) - 1; // Ajustamos a base 0 para el backend
 
         if (!isNaN(newPage) && newPage >= 0 && newPage < totalPages) {
-            const params: any = { page: newPage.toString() };
+            const params: any = { page: newPage.toString(), sort: sortBy };
             if (tagParam) params.tag = tagParam;
             setSearchParams(params);
         } else {
@@ -137,7 +137,7 @@ function videoListPage() {
                     className="pagination-button"
                     disabled={page === 0}
                     onClick={() => {
-                        const newParams: any = { page: (page - 1).toString() };
+                        const newParams: any = { page: (page - 1).toString(), sort: sortBy };
                         if (tagParam) newParams.tag = tagParam; // 👈 Mantenemos el tag si existe
                         setSearchParams(newParams);
                     }}
@@ -162,7 +162,7 @@ function videoListPage() {
                     className="pagination-button"
                     disabled={page + 1 === totalPages}
                     onClick={() => {
-                        const newParams: any = { page: (page + 1).toString() };
+                        const newParams: any = { page: (page + 1).toString(), sort: sortBy };
                         if (tagParam) newParams.tag = tagParam; // 👈 Mantenemos el tag si existe
                         setSearchParams(newParams);
                     }}
@@ -185,7 +185,7 @@ function videoListPage() {
                     className="pagination-button"
                     disabled={page === 0}
                     onClick={() => {
-                        const newParams: any = { page: (page - 1).toString() };
+                        const newParams: any = { page: (page - 1).toString(), sort: sortBy };
                         if (tagParam) newParams.tag = tagParam; // 👈 Mantenemos el tag si existe
                         setSearchParams(newParams);
                     }}
@@ -211,7 +211,7 @@ function videoListPage() {
                     className="pagination-button"
                     disabled={page + 1 === totalPages}
                     onClick={() => {
-                        const newParams: any = { page: (page + 1).toString() };
+                        const newParams: any = { page: (page + 1).toString(), sort: sortBy };
                         if (tagParam) newParams.tag = tagParam; // 👈 Mantenemos el tag si existe
                         setSearchParams(newParams);
                     }}

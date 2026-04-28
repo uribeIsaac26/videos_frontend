@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Tag } from "../types/Tag";
 import { getAllTags } from "../api/TagApi";
 import { useSearchParams } from "react-router-dom";
@@ -13,7 +13,13 @@ function tagListPage() {
     const page = Number(searchParams.get("page")) || 0;
     const [totalPages, setTotalPages] = useState(0);
     const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
+    const [isSelectionMode, setIsSelectionMode] = useState(false); // 👈 El interruptor
     const navigate = useNavigate();
+
+    const selectionModeRef = useRef(false);
+    const timerRef = useRef<number | null>(null);
+    const isLongPressActive = useRef(false);
+
 
     useEffect(() => {
         fetchTags(page);
@@ -25,7 +31,7 @@ function tagListPage() {
 
     const fetchTags = async (currentPage: number) => {
         try {
-            const data = await getAllTags(currentPage, 20);
+            const data = await getAllTags(currentPage, 50);
             setTags(data.content);
             setTotalPages(data.totalPages);
         } catch (error) {
@@ -34,12 +40,53 @@ function tagListPage() {
     };
 
     // Función para marcar/desmarcar
-    const toggleTagSelection = (tagId: number) => {
-        setSelectedTagIds(prev => 
-            prev.includes(tagId) 
-                ? prev.filter(id => id !== tagId) 
-                : [...prev, tagId]
-        );
+    const toggleTagSelection = (id: number) => {
+        setSelectedTagIds(prev => {
+            const isAlreadySelected = prev.includes(id);
+            const newList = isAlreadySelected
+                ? prev.filter(tagId => tagId !== id)
+                : [...prev, id];
+
+            // Actualizamos la referencia y el estado
+            const hasItems = newList.length > 0;
+            selectionModeRef.current = hasItems;
+            setIsSelectionMode(hasItems);
+
+            return newList;
+        });
+    };
+
+    const handleStart = (id: number) => {
+        isLongPressActive.current = false;
+
+        // Si ya estamos seleccionando, no queremos que el timer haga nada
+        if (selectionModeRef.current) return;
+
+        timerRef.current = window.setTimeout(() => {
+            isLongPressActive.current = true;
+            toggleTagSelection(id);
+            if (navigator.vibrate) navigator.vibrate(50);
+        }, 600);
+    };
+
+    const handleEnd = (id: number) => {
+        if (timerRef.current) {
+            window.clearTimeout(timerRef.current);
+            timerRef.current = null;
+        }
+
+        // Si fue una presión larga, bloqueamos el clic para que no se desmarque
+        if (isLongPressActive.current) {
+            isLongPressActive.current = false;
+            return;
+        }
+
+        // 💡 Aquí está el truco: usamos la REF para decidir qué hacer
+        if (selectionModeRef.current) {
+            toggleTagSelection(id);
+        } else {
+            navigate(`/?tag=${id}`);
+        }
     };
 
     // Función para ir a la galería con los filtros
@@ -48,7 +95,7 @@ function tagListPage() {
             // Unimos los IDs por comas: ?tag=1,2,3
             navigate(`/?tag=${selectedTagIds.join(",")}`);
         }
-        };
+    };
 
     return (
         <div className="page-container">
@@ -93,17 +140,22 @@ function tagListPage() {
             </div>
 
             <div className="tag-selection-grid">
-                {tags.map((tag) => (
-                    <div 
-                        key={tag.id} 
-                        className={`tag-card-wrapper ${selectedTagIds.includes(tag.id) ? 'selected' : ''}`}
-                        onClick={() => toggleTagSelection(tag.id)}
-                    >
-                        <TagCard tag={tag} />
-                        {/* Indicador visual de selección */}
-                        {selectedTagIds.includes(tag.id) && <div className="check-mark">✓</div>}
-                    </div>
-                ))}
+                {tags.map((tag) => {
+                    const isSelected = selectedTagIds.includes(tag.id);
+                    return (
+                        <div
+                            key={tag.id}
+                            className={`tag-card-wrapper ${selectedTagIds.includes(tag.id) ? 'selected' : ''}`}
+                            onPointerDown={() => handleStart(tag.id)}
+                            onPointerUp={() => handleEnd(tag.id)}
+                            onContextMenu={(e) => e.preventDefault()}
+                            style={{ touchAction: 'none', userSelect: 'none' }}
+                        >
+                            <TagCard tag={tag} />
+                            {isSelected && <div className="check-indicator">✓</div>}
+                        </div>
+                    );
+                })}
             </div>
         </div>
     )
