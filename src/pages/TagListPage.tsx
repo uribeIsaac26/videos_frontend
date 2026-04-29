@@ -106,17 +106,6 @@ function tagListPage() {
                 </button>
                 <UserMenu />
             </header>
-
-            {selectedTagIds.length > 0 && (
-                <div className="floating-filter-bar">
-                    <span>{selectedTagIds.length} seleccionados</span>
-                    <div className="action-buttons">
-                        <button className="clear-btn" onClick={() => setSelectedTagIds([])}>Limpiar</button>
-                        <button className="apply-btn" onClick={handleApplyFilters}>Ver Videos 🎬</button>
-                    </div>
-                </div>
-            )}
-
             <div className="pagination-container">
                 <button
                     className="pagination-button"
@@ -157,6 +146,17 @@ function tagListPage() {
                     );
                 })}
             </div>
+            {selectedTagIds.length > 0 && (
+            <div className="floating-container">
+                <div className="floating-filter-bar">
+                    <span className="count-text">{selectedTagIds.length} seleccionados</span>
+                    <div className="action-buttons">
+                        <button className="clear-btn" onClick={() => setSelectedTagIds([])}>Limpiar</button>
+                        <button className="apply-btn" onClick={handleApplyFilters}>Aplicar</button>
+                    </div>
+                </div>
+            </div>
+        )}
         </div>
     )
 }
