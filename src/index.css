@@ -425,6 +425,7 @@ button:disabled {
 .tag-pill {
   background: #333; border: none; color: white;
   padding: 8px 12px; border-radius: 20px; cursor: pointer;
+  pointer-events: none;
 }
 
 .tag-pill.active {
@@ -740,7 +741,7 @@ button:disabled {
     
     position: relative;
     transition: transform 0.15s ease;
-    touch-action: none; /* Evita que el navegador tome el control del toque */
+    touch-action: pan-y; /* Evita que el navegador tome el control del toque */
     -webkit-tap-highlight-color: transparent;
 }
 

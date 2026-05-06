@@ -138,7 +138,7 @@ function tagListPage() {
                             onPointerDown={() => handleStart(tag.id)}
                             onPointerUp={() => handleEnd(tag.id)}
                             onContextMenu={(e) => e.preventDefault()}
-                            style={{ touchAction: 'none', userSelect: 'none' }}
+                            style={{ touchAction: 'pan-y', userSelect: 'none' }}
                         >
                             <TagCard tag={tag} />
                             {isSelected && <div className="check-indicator">✓</div>}

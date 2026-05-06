@@ -3,17 +3,14 @@ interface Props{
     tag: Tag;
 }
 
-function TagCard({tag}: Props){
+function TagCard({ tag }: Props) {
     return (
-    <div className="tag-card">
-       <button
-       key={tag.id}
-       className="tag-pill clickable">
-        {tag.name}
-       </button>
-       
-    </div>
-  );
+        <div className="tag-card">
+            <span className="tag-pill">
+                {tag.name}
+            </span>
+        </div>
+    );
 }
 
 export default TagCard;
