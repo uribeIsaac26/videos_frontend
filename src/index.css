@@ -417,9 +417,9 @@ button:disabled {
 
 .tag-selection-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 15px;
-    padding-bottom: 100px; /* 👈 Espacio extra para que la barra no tape nada */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding-bottom: 120px; /* Espacio para la barra flotante */
 }
 
 .tag-pill {
@@ -752,4 +752,203 @@ button:disabled {
 .tag-card-wrapper.selected {
     border: 2px solid #3ea6ff;
     box-shadow: 0 0 15px rgba(62, 166, 255, 0.3);
+}
+
+/* Contenedor principal (usa el que ya tienes o este) */
+.page-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Grid de predicciones */
+.tag-selection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+/* Tarjeta de Sugerencia (IA) */
+.prediction-card-wrapper {
+    position: relative;
+    background: #181818; /* Como tu .upload-card */
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 15px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.prediction-card-wrapper:hover {
+    transform: scale(1.02);
+    border-color: #3f3f3f;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Estado Seleccionado usando tu azul #3ea6ff */
+.prediction-card-wrapper.selected {
+    border-color: #3ea6ff;
+    background-color: #1a1a1a;
+}
+
+/* Información del Video */
+.video-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 8px;
+}
+
+.video-id-label {
+    font-weight: bold;
+    color: #455a64;
+    font-size: 0.9rem;
+}
+
+/* Contenedor de Badges (Tags Sugeridos) */
+.tags-suggest-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+/* Badge Individual */
+.tag-badge {
+    background-color: #eceff1;
+    color: #37474f;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1px solid #cfd8dc;
+    transition: background-color 0.2s;
+}
+
+.prediction-card-wrapper.selected .tag-badge.ia-suggest {
+    background-color: #3ea6ff;
+    color: #000;
+    border-color: #3ea6ff;
+}
+
+/* Indicador de Check (Círculo azul) */
+.check-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #3ea6ff;
+    color: #000;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    z-index: 5;
+}
+
+/* --- Barra Flotante (Action Bar) --- */
+.floating-container {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 600px;
+    z-index: 1000;
+}
+
+.floating-filter-bar {
+    background: #1e1e1e;
+    border: 1px solid #333;
+}
+
+.count-text {
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.clear-btn {
+    background: transparent;
+    border: 1px solid #757575;
+    color: #bdbdbd;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.clear-btn:hover {
+    color: white;
+    border-color: white;
+}
+
+.apply-btn {
+    background-color: #3ea6ff; /* Tu azul principal */
+    color: #000;
+}
+
+.apply-btn:hover {
+    background-color: #2b8cd8;
+}
+
+/* Animación de entrada para las cards */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.prediction-card-wrapper {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.prediction-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.thumbnail-container {
+    width: 100%;
+    height: 160px;
+    background-color: #000;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+
+.thumbnail-container .thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.video-id-badge {
+    font-size: 12px;
+    color: #aaa;
+    margin-bottom: 4px;
+    display: block;
+}
+
+/* Diferenciador visual para tags de IA */
+.tag-badge.ia-suggest {
+    background-color: #272727;
+    color: #3ea6ff; /* Tu azul de acento */
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    border: 1px solid #3f3f3f;
+    font-weight: 500;
 }

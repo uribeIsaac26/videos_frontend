@@ -16,7 +16,7 @@ function VideoPlayerPage() {
   const page = searchParams.get("page") || "0";
 
   const location = useLocation();
-  const { videos, index } = location.state || {};
+  const { videos, index, fromIA } = location.state || {};
 
   const videoUrl = `${API_URL}/api/videos/${id}/video`;
 
@@ -43,6 +43,16 @@ function VideoPlayerPage() {
       setSelectedTagIds(currentTagIds);
     }
   }, [index, videos, showTagModal]);
+
+  const handleExit = () => {
+    if (fromIA) {
+      // Si venimos de la IA, volvemos a la ruta de la IA
+      navigate(`/tags/sugess?page=${page}`); 
+    } else {
+      // Si no, volvemos a la galería normal
+      navigate(`/?page=${page}`);
+    }
+  };
 
   const handleSaveTags = async () => {
     try {
@@ -120,7 +130,7 @@ function VideoPlayerPage() {
   return (
     <div className="video-player-page">
       <header style={{ width: '100%', maxWidth: '1000px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <button className="back-button" onClick={() => navigate(`/?page=${page}`)}>
+        <button className="back-button" onClick={handleExit}>
           ✕ Salir
         </button>
         <div style={{ width: '80px' }}></div> {/* Espaciador para centrar el título */}

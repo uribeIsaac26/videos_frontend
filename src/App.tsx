@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import { PrivateRoute } from "./components/PrivateRoute";
 import TagListPage from "./pages/TagListPage";
 import CreateTagPage from "./pages/CreateTagPage";
+import SugerenciasIAPage from "./pages/SugerenciasIAPage";
 
 function App() {
   return (
@@ -53,6 +54,14 @@ function App() {
         {
           <PrivateRoute>
             <CreateTagPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/tags/sugess"
+        element={
+          <PrivateRoute>
+            <SugerenciasIAPage />
           </PrivateRoute>
         }
       />

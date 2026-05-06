@@ -45,6 +45,13 @@ const UserMenu = () => {
                         🏷️ Administrar Tags
                     </button>
 
+                    <button 
+                        className="dropdown-item" 
+                        onClick={() => navigate("/tags/sugess")}
+                    >
+                        🏷️ Administrar Tags Sugeridos
+                    </button>
+
                     <div className="dropdown-divider"></div>
 
                     <button 
