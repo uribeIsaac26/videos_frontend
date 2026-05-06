@@ -412,20 +412,38 @@ button:disabled {
   background: #1e1e1e;
   padding: 20px;
   border-radius: 12px;
-  width: 90%; max-width: 400px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh; /* Limita la altura al 80% de la pantalla */
+  display: flex;
+  flex-direction: column; /* Organiza el contenido en columna */
 }
 
 .tag-selection-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-    padding-bottom: 120px; /* Espacio para la barra flotante */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  overflow-y: auto; /* 🔥 Habilita el scroll vertical */
+  margin: 20px 0;
+  padding-right: 5px; /* Espacio para la barra de scroll */
+  flex-grow: 1; /* Hace que esta parte ocupe el espacio disponible */
+}
+
+/* Estetica opcional para la barra de scroll */
+.tag-selection-grid::-webkit-scrollbar {
+  width: 6px;
+}
+.tag-selection-grid::-webkit-scrollbar-thumb {
+  background: #3ea6ff;
+  border-radius: 10px;
 }
 
 .tag-pill {
   background: #333; border: none; color: white;
   padding: 8px 12px; border-radius: 20px; cursor: pointer;
-  pointer-events: none;
+  pointer-events: auto !important; /* 🔥 Asegura que el botón reciba el clic */
+  cursor: pointer;
+  z-index: 10;
 }
 
 .tag-pill.active {
@@ -768,6 +786,8 @@ button:disabled {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
     padding: 20px 0;
+    position: relative;
+    z-index: 5;
 }
 
 /* Tarjeta de Sugerencia (IA) */

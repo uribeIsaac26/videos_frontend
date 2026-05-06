@@ -47,7 +47,7 @@ function VideoPlayerPage() {
   const handleExit = () => {
     if (fromIA) {
       // Si venimos de la IA, volvemos a la ruta de la IA
-      navigate(`/tags/sugess?page=${page}`); 
+      navigate(`/tags/sugess?page=${page}`);
     } else {
       // Si no, volvemos a la galería normal
       navigate(`/?page=${page}`);
@@ -186,23 +186,40 @@ function VideoPlayerPage() {
       </div>
 
       {showTagModal && (
-        <div className="modal-overlay">
+        <div
+          className="modal-overlay"
+          onMouseDown={(e) => {
+            // Usamos onMouseDown y verificamos que el clic sea en el fondo negro
+            if (e.target === e.currentTarget) setShowTagModal(false);
+          }}
+        >
           <div className="tag-modal">
             <h3>Seleccionar Tags</h3>
+
             <div className="tag-selection-grid">
               {availableTags.map(tag => (
                 <button
                   key={tag.id}
+                  type="button" // 🔥 Evita que se comporte como "submit"
                   className={`tag-pill ${selectedTagIds.includes(tag.id) ? 'active' : ''}`}
-                  onClick={() => toggleTag(tag.id)}
+                  onClick={(e) => {
+                    e.preventDefault(); // Evita cualquier comportamiento nativo
+                    e.stopPropagation(); // Evita que el clic suba al modal o al fondo
+                    toggleTag(tag.id);
+                  }}
                 >
                   {tag.name}
                 </button>
               ))}
             </div>
+
             <div className="modal-footer">
-              <button onClick={() => setShowTagModal(false)}>Cancelar</button>
-              <button className="save-btn" onClick={handleSaveTags}>Guardar Cambios</button>
+              <button className="back-button" onClick={() => setShowTagModal(false)}>
+                Cancelar
+              </button>
+              <button className="save-btn" onClick={handleSaveTags}>
+                Guardar Cambios
+              </button>
             </div>
           </div>
         </div>
