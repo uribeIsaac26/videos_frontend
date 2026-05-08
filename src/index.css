@@ -420,13 +420,15 @@ button:disabled {
 }
 
 .tag-selection-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 10px;
-  overflow-y: auto; /* 🔥 Habilita el scroll vertical */
-  margin: 20px 0;
-  padding-right: 5px; /* Espacio para la barra de scroll */
-  flex-grow: 1; /* Hace que esta parte ocupe el espacio disponible */
+  display: flex;             /* Usar flexbox es más flexible para etiquetas */
+  flex-wrap: wrap;           /* Permite que los tags pasen a la siguiente línea */
+  gap: 10px;                 /* Espacio entre tags */
+  justify-content: center;   /* Centra los tags horizontalmente */
+  padding: 15px;
+  max-height: 400px;         /* Altura máxima para activar el scroll */
+  overflow-y: auto;          /* Habilita el scroll vertical */
+  background-color: #1a1a1a; /* Un fondo ligeramente distinto para el área de tags */
+  border-radius: 8px;
 }
 
 /* Estetica opcional para la barra de scroll */
@@ -439,16 +441,30 @@ button:disabled {
 }
 
 .tag-pill {
-  background: #333; border: none; color: white;
-  padding: 8px 12px; border-radius: 20px; cursor: pointer;
-  pointer-events: auto !important; /* 🔥 Asegura que el botón reciba el clic */
+  background-color: #333;
+  color: white;
+  border: 1px solid #444;
+  padding: 8px 16px;
+  border-radius: 20px;       /* Forma de pastilla redondeada */
   cursor: pointer;
-  z-index: 10;
+  font-size: 0.9rem;
+  white-space: nowrap;       /* Evita que el texto de un tag se parta en dos líneas */
+  transition: all 0.2s ease;
+  display: inline-block;     /* Asegura que no ocupen todo el ancho */
+  width: auto;               /* ¡Importante! que el ancho dependa del texto */
 }
 
+/* Cuando el tag está seleccionado */
 .tag-pill.active {
-  background: #ff0000; /* O el color de tu app */
-  color: white;
+  background-color: #3ea6ff; /* Tu azul de acento */
+  color: black;
+  border-color: #3ea6ff;
+  font-weight: bold;
+}
+
+.tag-pill:hover {
+  background-color: #444;
+  border-color: #666;
 }
 
 .modal-footer {
@@ -778,16 +794,6 @@ button:disabled {
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
-}
-
-/* Grid de predicciones */
-.tag-selection-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-    padding: 20px 0;
-    position: relative;
-    z-index: 5;
 }
 
 /* Tarjeta de Sugerencia (IA) */
