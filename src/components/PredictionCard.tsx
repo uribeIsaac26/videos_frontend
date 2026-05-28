@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { VideoTagTemporal } from "../types/VideoTagTemporal";
+import { getTagsByName } from "../api/TagApi";
 import type { Video } from "../types/Video";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -24,13 +25,25 @@ function PredictionCard({ prediction, currentPage, allPredictions, index }: Prop
     tags: prediction.tagsSuggest.split(',').map((tag, i) => ({ id: i, name: tag.trim() })) as any
   };
 
-const handleClick = () => {
+const handleClick = async () => {
+
+  const allNames = [...new Set(
+    allPredictions.flatMap(p => p.tagsSuggest.split(',').map(t => t.trim()))
+  )];
+
+const allRealTags = await getTagsByName(allNames);
+
+console.log(allNames)
+console.log(allRealTags)
+
   navigate(`/videos/${prediction.videoId}?page=${currentPage}`, {
     state: {
       videos: allPredictions.map(p => ({ 
         id: p.videoId, 
         title: `Sugerencia IA - ${p.videoId}`,
-        tags: p.tagsSuggest.split(',').map((tag, i) => ({ id: i, name: tag.trim() }))
+        tags: p.tagsSuggest.split(',')
+        .map(t => allRealTags.find(rt => rt.name.toLowerCase() === t.trim().toLowerCase()))
+        .filter(Boolean)
       })),
       index,
       fromIA: true // 👈 Agregamos esta bandera

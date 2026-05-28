@@ -35,6 +35,17 @@ export const getTagById = async (id: number) => {
     return response.json();
 }
 
+export const getTagsByName = async(tags: string []) => {
+    const response = await fetch(`${BASE_URL}/by-names?tags=${tags}`,
+        {
+            credentials: "include",
+        }
+    );
+    if(!response.ok) throw new Error("Error al obtener los tags");
+    const data: Tag[] = await response.json();
+    return data;
+}
+
 export async function createTag(
     name: string,
 ): Promise<any> {
