@@ -91,6 +91,7 @@ function DuplicadosPage() {
           tags: [],
         })),
         index,
+        fromDuplicados: true,
       },
     });
   };

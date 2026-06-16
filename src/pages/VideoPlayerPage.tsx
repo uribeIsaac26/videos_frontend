@@ -16,7 +16,7 @@ function VideoPlayerPage() {
   const page = searchParams.get("page") || "0";
 
   const location = useLocation();
-  const { videos, index, fromIA } = location.state || {};
+  const { videos, index, fromIA, fromDuplicados } = location.state || {};
 
   const videoUrl = `${API_URL}/api/videos/${id}/video`;
 
@@ -46,10 +46,10 @@ function VideoPlayerPage() {
 
   const handleExit = () => {
     if (fromIA) {
-      // Si venimos de la IA, volvemos a la ruta de la IA
       navigate(`/tags/sugess?page=${page}`);
+    } else if (fromDuplicados) {
+      navigate("/duplicados");
     } else {
-      // Si no, volvemos a la galería normal
       navigate(`/?page=${page}`);
     }
   };
@@ -96,7 +96,13 @@ function VideoPlayerPage() {
 
     try {
       await deleteVideo(Number(id));
-      navigate(`/?page=${page}`);
+      if (fromIA) {
+        navigate(`/tags/sugess?page=${page}`);
+      } else if (fromDuplicados) {
+        navigate("/duplicados");
+      } else {
+        navigate(`/?page=${page}`);
+      }
     } catch (error) {
       console.error("Error eliminando el video ", error);
       alert("No se pudo eliminar el video");
