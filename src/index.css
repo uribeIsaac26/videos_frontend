@@ -1119,3 +1119,23 @@ button:disabled {
   border-radius: 10px;
   font-weight: 600;
 }
+
+.resolve-btn {
+  display: block;
+  width: calc(100% - 24px);
+  margin: 0 12px 12px;
+  padding: 8px;
+  background-color: transparent;
+  color: #2ecc71;
+  border: 1px solid #2ecc71;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.resolve-btn:hover {
+  background-color: #2ecc71;
+  color: #000;
+}

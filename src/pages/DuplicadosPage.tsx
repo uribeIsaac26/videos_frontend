@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import type { AccionDuplicado, GrupoDuplicado, MiembroDuplicado } from "../types/VideoDuplicate";
-import { getGruposDuplicados, getGrupoDuplicado } from "../api/VideoDuplicateApi";
+import { getGruposDuplicados, getGrupoDuplicado, resolveGrupoDuplicado } from "../api/VideoDuplicateApi";
 import DuplicadoCard from "../components/DuplicadoCard";
 import UserMenu from "../components/UserMenu";
 
@@ -81,6 +81,16 @@ function DuplicadosPage() {
     }
   };
 
+  const handleResolve = async (id: number) => {
+    try {
+      await resolveGrupoDuplicado(id);
+      fetchGrupos(page);
+    } catch (error) {
+      console.error("Error al resolver grupo", error);
+      alert("No se pudo marcar el grupo como resuelto");
+    }
+  };
+
   const handleMemberClick = (member: MiembroDuplicado, index: number) => {
     if (!selectedGrupo?.members) return;
     navigate(`/videos/${member.video.id}`, {
@@ -141,6 +151,7 @@ function DuplicadosPage() {
               key={grupo.id}
               grupo={grupo}
               onClick={() => handleCardClick(grupo.id)}
+              onResolve={() => handleResolve(grupo.id)}
             />
           ))}
         </div>

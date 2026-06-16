@@ -18,9 +18,10 @@ const ACCION_COLORS: Record<AccionDuplicado, string> = {
 interface Props {
   grupo: GrupoDuplicado;
   onClick: () => void;
+  onResolve: () => void;
 }
 
-function DuplicadoCard({ grupo, onClick }: Props) {
+function DuplicadoCard({ grupo, onClick, onResolve }: Props) {
   const [thumbnailSrc, setThumbnailSrc] = useState<string | null>(null);
 
   useEffect(() => {
@@ -66,6 +67,16 @@ function DuplicadoCard({ grupo, onClick }: Props) {
         <span>{grupo.totalMembers} videos</span>
         <span>{new Date(grupo.dateCreation).toLocaleDateString("es-CO")}</span>
       </div>
+
+      <button
+        className="resolve-btn"
+        onClick={(e) => {
+          e.stopPropagation();
+          onResolve();
+        }}
+      >
+        ✅ Marcar resuelto
+      </button>
     </div>
   );
 }

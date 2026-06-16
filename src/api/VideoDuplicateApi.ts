@@ -31,3 +31,14 @@ export async function getGrupoDuplicado(id: number): Promise<GrupoDuplicado> {
   }
   return response.json();
 }
+
+export async function resolveGrupoDuplicado(id: number): Promise<void> {
+  const response = await fetch(`${BASE_URL}/${id}/resolve`, {
+    method: "PATCH",
+    credentials: "include",
+  });
+  if (!response.ok) {
+    handleUnauth(response);
+    throw new Error("Error al resolver el grupo de duplicados");
+  }
+}
