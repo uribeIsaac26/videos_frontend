@@ -45,11 +45,18 @@ const UserMenu = () => {
                         🏷️ Administrar Tags
                     </button>
 
-                    <button 
-                        className="dropdown-item" 
+                    <button
+                        className="dropdown-item"
                         onClick={() => navigate("/tags/sugess")}
                     >
                         🏷️ Administrar Tags Sugeridos
+                    </button>
+
+                    <button
+                        className="dropdown-item"
+                        onClick={() => navigate("/duplicados")}
+                    >
+                        📋 Videos Duplicados
                     </button>
 
                     <div className="dropdown-divider"></div>

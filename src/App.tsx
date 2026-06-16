@@ -7,6 +7,7 @@ import { PrivateRoute } from "./components/PrivateRoute";
 import TagListPage from "./pages/TagListPage";
 import CreateTagPage from "./pages/CreateTagPage";
 import SugerenciasIAPage from "./pages/SugerenciasIAPage";
+import DuplicadosPage from "./pages/DuplicadosPage";
 
 function App() {
   return (
@@ -62,6 +63,14 @@ function App() {
         element={
           <PrivateRoute>
             <SugerenciasIAPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/duplicados"
+        element={
+          <PrivateRoute>
+            <DuplicadosPage />
           </PrivateRoute>
         }
       />

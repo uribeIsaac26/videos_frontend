@@ -979,3 +979,143 @@ button:disabled {
     border: 1px solid #3f3f3f;
     font-weight: 500;
 }
+
+/* ===================== */
+/* DUPLICADOS STYLES     */
+/* ===================== */
+
+.thumbnail-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+  font-size: 0.8rem;
+  background-color: #111;
+}
+
+.duplicado-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.duplicado-card {
+  background-color: #181818;
+  border: 1px solid #333;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.duplicado-card:hover {
+  transform: scale(1.02);
+  border-color: #3f3f3f;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.duplicado-card-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px 4px;
+  gap: 8px;
+}
+
+.duplicado-tag-origen {
+  font-weight: 600;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.accion-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 20px;
+  color: #000;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.duplicado-card-meta {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 12px 12px;
+  font-size: 0.78rem;
+  color: #888;
+}
+
+/* Detail modal */
+
+.duplicado-detail-modal {
+  max-width: 700px;
+  width: 95%;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.duplicado-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  gap: 12px;
+}
+
+.duplicado-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.miembro-card {
+  background-color: #111;
+  border: 1px solid #2a2a2a;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.miembro-card:hover {
+  transform: scale(1.03);
+  border-color: #3ea6ff;
+}
+
+.miembro-info {
+  padding: 8px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.miembro-title {
+  font-size: 0.82rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #ddd;
+}
+
+.miembro-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+}
+
+.similitud-badge {
+  font-size: 0.72rem;
+  color: #3ea6ff;
+  background-color: #1a2a3a;
+  border: 1px solid #2a4a6a;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-weight: 600;
+}
