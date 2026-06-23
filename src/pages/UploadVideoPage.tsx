@@ -118,10 +118,10 @@ function UploadVideoPage() {
             </div>
 
             <div className="form-group">
-              <label>Video (mp4)</label>
+              <label>Video</label>
               <input
                 type="file"
-                accept="video/mp4"
+                accept="video/*"
                 multiple
                 onChange={(e) => {
                   if (!e.target.files) return;
