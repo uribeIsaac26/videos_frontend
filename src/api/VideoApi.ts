@@ -113,6 +113,19 @@ export function uploadVideo(
   });
 }
 
+export async function getVideoStatus(id: number): Promise<{ id: number; status: string; errorMessage: string | null }> {
+  const response = await fetch(`${BASE_URL}/${id}/status`, {
+    credentials: "include"
+  });
+  if (!response.ok) {
+    if (response.status === 401) {
+      window.location.href = "/login";
+    }
+    throw new Error("Error al obtener el estado del video");
+  }
+  return response.json();
+}
+
 export async function addTagsToVideo(videoId: number, tagIds: number[]): Promise<any> {
   const response = await fetch(`${BASE_URL}/tag`, {
     method: 'PUT',
