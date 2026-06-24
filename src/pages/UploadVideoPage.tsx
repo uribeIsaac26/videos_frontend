@@ -20,13 +20,16 @@ function UploadVideoPage() {
   const [isUploading, setIsUploading] = useState(false);
   const navigate = useNavigate();
   const [uploadCompleted, setUploadCompleted] = useState(false);
+  const [failedCount, setFailedCount] = useState(0);
 
   useEffect(() => {
     if (videos.length === 0) return;
     const allSettled = videos.every(v => v.status === "done" || v.status === "error");
     if (!allSettled) return;
-    if (!videos.some(v => v.status === "error")) {
-      setUploadCompleted(true);
+    const errors = videos.filter(v => v.status === "error").length;
+    setFailedCount(errors);
+    setUploadCompleted(true);
+    if (errors === 0) {
       setVideos([]);
       setTitle("");
       setThumbnailFile(null);
@@ -97,6 +100,8 @@ function UploadVideoPage() {
     }
 
     setIsUploading(true);
+    setUploadCompleted(false);
+    setFailedCount(0);
 
     const MAX_CONCURRENT = 50;
 
@@ -128,9 +133,14 @@ function UploadVideoPage() {
         </button>
         <div className="upload-card">
           <h2 className="upload-title">Subir Video</h2>
-          {uploadCompleted && (
+          {uploadCompleted && failedCount === 0 && (
             <div className="success-message">
               Todos los videos se procesaron correctamente 🎉
+            </div>
+          )}
+          {uploadCompleted && failedCount > 0 && (
+            <div className="error-message">
+              El proceso terminó pero fallaron {failedCount} {failedCount === 1 ? "video" : "videos"}
             </div>
           )}
 
