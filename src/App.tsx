@@ -8,6 +8,9 @@ import TagListPage from "./pages/TagListPage";
 import CreateTagPage from "./pages/CreateTagPage";
 import SugerenciasIAPage from "./pages/SugerenciasIAPage";
 import DuplicadosPage from "./pages/DuplicadosPage";
+import ImageGalleryPage from "./pages/ImageGalleryPage";
+import UploadImagePage from "./pages/UploadImagePage";
+import ImageViewerPage from "./pages/ImageViewerPage";
 
 function App() {
   return (
@@ -71,6 +74,30 @@ function App() {
         element={
           <PrivateRoute>
             <DuplicadosPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/gallery"
+        element={
+          <PrivateRoute>
+            <ImageGalleryPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/gallery/upload"
+        element={
+          <PrivateRoute>
+            <UploadImagePage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/gallery/:id"
+        element={
+          <PrivateRoute>
+            <ImageViewerPage />
           </PrivateRoute>
         }
       />

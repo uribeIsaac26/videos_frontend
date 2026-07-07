@@ -59,6 +59,20 @@ const UserMenu = () => {
                         📋 Videos Duplicados
                     </button>
 
+                    <button
+                        className="dropdown-item"
+                        onClick={() => navigate("/gallery")}
+                    >
+                        🖼️ Galería de Imágenes
+                    </button>
+
+                    <button
+                        className="dropdown-item"
+                        onClick={() => navigate("/gallery/upload")}
+                    >
+                        📤 Subir Imagen
+                    </button>
+
                     <div className="dropdown-divider"></div>
 
                     <button 
