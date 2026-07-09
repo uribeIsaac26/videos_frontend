@@ -11,6 +11,8 @@ type UploadItem = {
   errorMessage?: string;
 };
 
+const VIDEO_EXTENSIONS = [".mp4", ".mov", ".avi", ".mkv", ".webm", ".m4v", ".3gp", ".wmv", ".flv"];
+
 
 function UploadVideoPage() {
 
@@ -158,12 +160,20 @@ function UploadVideoPage() {
               <label>Video</label>
               <input
                 type="file"
-                accept=".mp4,.mov,.avi,.mkv,.webm,.m4v,.3gp,.wmv,.flv"
                 multiple
                 onChange={(e) => {
                   if (!e.target.files) return;
 
-                  const filesArray: UploadItem[] = Array.from(e.target.files).map(file => ({
+                  const selected = Array.from(e.target.files);
+                  const valid = selected.filter(file =>
+                    VIDEO_EXTENSIONS.some(ext => file.name.toLowerCase().endsWith(ext))
+                  );
+
+                  if (valid.length < selected.length) {
+                    alert(`Se ignoraron ${selected.length - valid.length} archivo(s) que no son videos`);
+                  }
+
+                  const filesArray: UploadItem[] = valid.map(file => ({
                     file,
                     progress: 0,
                     status: "pending"
@@ -171,8 +181,8 @@ function UploadVideoPage() {
 
                   setVideos(prev => [...prev, ...filesArray]);
                   setUploadCompleted(false);
+                  e.target.value = "";
                 }}
-                required
               />
             </div>
 

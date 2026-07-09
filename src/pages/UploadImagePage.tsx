@@ -11,6 +11,8 @@ type UploadItem = {
   errorMessage?: string;
 };
 
+const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".heic", ".heif"];
+
 
 function UploadImagePage() {
 
@@ -132,12 +134,20 @@ function UploadImagePage() {
               <label>Imagen</label>
               <input
                 type="file"
-                accept=".jpg,.jpeg,.png,.gif,.webp,.bmp,.heic,.heif"
                 multiple
                 onChange={(e) => {
                   if (!e.target.files) return;
 
-                  const filesArray: UploadItem[] = Array.from(e.target.files).map(file => ({
+                  const selected = Array.from(e.target.files);
+                  const valid = selected.filter(file =>
+                    IMAGE_EXTENSIONS.some(ext => file.name.toLowerCase().endsWith(ext))
+                  );
+
+                  if (valid.length < selected.length) {
+                    alert(`Se ignoraron ${selected.length - valid.length} archivo(s) que no son imágenes`);
+                  }
+
+                  const filesArray: UploadItem[] = valid.map(file => ({
                     file,
                     progress: 0,
                     status: "pending"
@@ -145,8 +155,8 @@ function UploadImagePage() {
 
                   setImages(prev => [...prev, ...filesArray]);
                   setUploadCompleted(false);
+                  e.target.value = "";
                 }}
-                required
               />
             </div>
 
