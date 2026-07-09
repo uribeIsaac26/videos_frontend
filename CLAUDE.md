@@ -44,7 +44,7 @@ src/
 
 ### API layer
 
-Each file in `src/api/` exports typed functions that call `fetch`. No abstraction layer — errors are handled inline, 401s redirect to `/login`. Video upload uses `XMLHttpRequest` (not `fetch`) specifically to support upload progress callbacks; uploads are chunked to max 50 concurrent requests.
+Each file in `src/api/` exports typed functions that call `fetch`. No abstraction layer — errors are handled inline, 401s redirect to `/login`. Video upload uses `XMLHttpRequest` (not `fetch`) specifically to support upload progress callbacks; video uploads are chunked to max 200 concurrent requests, image uploads to max 500.
 
 ### Key non-obvious behaviors
 
