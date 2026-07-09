@@ -78,7 +78,7 @@ function UploadImagePage() {
     setUploadCompleted(false);
     setFailedCount(0);
 
-    const MAX_CONCURRENT = 50;
+    const MAX_CONCURRENT = 500;
 
     for (let i = 0; i < images.length; i += MAX_CONCURRENT) {
       const chunk = images.slice(i, i + MAX_CONCURRENT);
