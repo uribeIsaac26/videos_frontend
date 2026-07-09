@@ -132,7 +132,7 @@ function UploadImagePage() {
               <label>Imagen</label>
               <input
                 type="file"
-                accept="image/*"
+                accept=".jpg,.jpeg,.png,.gif,.webp,.bmp,.heic,.heif"
                 multiple
                 onChange={(e) => {
                   if (!e.target.files) return;

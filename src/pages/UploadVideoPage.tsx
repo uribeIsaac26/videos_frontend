@@ -158,7 +158,7 @@ function UploadVideoPage() {
               <label>Video</label>
               <input
                 type="file"
-                accept="video/*"
+                accept=".mp4,.mov,.avi,.mkv,.webm,.m4v,.3gp,.wmv,.flv"
                 multiple
                 onChange={(e) => {
                   if (!e.target.files) return;
