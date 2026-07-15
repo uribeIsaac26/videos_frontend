@@ -69,7 +69,7 @@ function VideoPlayerPage() {
           pathname: location.pathname,
           search: `?${currentQuery}`
         }, {
-          state: { videos: newVideos, index },
+          state: { videos: newVideos, index, fromIA, fromDuplicados },
           replace: true
         });
       }
@@ -116,7 +116,7 @@ function VideoPlayerPage() {
       const next = videos[index + 1];
 
       navigate(`/videos/${next.id}?page=${page}`, {
-        state: { videos, index: index + 1 }
+        state: { videos, index: index + 1, fromIA, fromDuplicados }
       });
     }
   };
@@ -128,7 +128,7 @@ function VideoPlayerPage() {
       const prev = videos[index - 1];
 
       navigate(`/videos/${prev.id}?page=${page}`, {
-        state: { videos, index: index - 1 }
+        state: { videos, index: index - 1, fromIA, fromDuplicados }
       });
     }
   };

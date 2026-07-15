@@ -1,26 +1,22 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import { getAllVideosPending } from "../api/VideoTagTemporalApi";
 import type { VideoTagTemporal } from "../types/VideoTagTemporal";
 import UserMenu from "../components/UserMenu";
 import PredictionCard from "../components/PredictionCard";
 
+const PAGE_SIZE = 1000;
+
 function SugerenciasIAPage() {
     const [suggestions, setSuggestions] = useState<VideoTagTemporal[]>([]);
-    const [searchParams, setSearchParams] = useSearchParams();
-    const page = Number(searchParams.get("page")) || 0;
-    const [totalPages, setTotalPages] = useState(0);
 
     useEffect(() => {
-        fetchPendingVideos(page);
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    }, [page]);
+        fetchPendingVideos();
+    }, []);
 
-    const fetchPendingVideos = async (currentPage: number) => {
+    const fetchPendingVideos = async () => {
         try {
-            const data = await getAllVideosPending(currentPage, 20);
+            const data = await getAllVideosPending(0, PAGE_SIZE);
             setSuggestions(data.content);
-            setTotalPages(data.totalPages);
         } catch (error) {
             console.error("Error cargando sugerencias de IA", error);
         }
@@ -33,26 +29,6 @@ function SugerenciasIAPage() {
                 <UserMenu />
             </header>
 
-            <div className="pagination-container">
-                <button
-                    className="pagination-button"
-                    disabled={page === 0}
-                    onClick={() => setSearchParams({ page: (page - 1).toString() })}
-                >
-                    ◀ Anterior
-                </button>
-                <span className="pagination-info">
-                    Página {page + 1} de {totalPages}
-                </span>
-                <button
-                    className="pagination-button"
-                    disabled={page + 1 === totalPages}
-                    onClick={() => setSearchParams({ page: (page + 1).toString() })}
-                >
-                    Siguiente ▶
-                </button>
-            </div>
-
             <div className="tag-selection-grid">
                 {suggestions.map((item, index) => (
                     <div
@@ -62,7 +38,7 @@ function SugerenciasIAPage() {
                     >
                         <PredictionCard
                             prediction={item}
-                            currentPage={page}
+                            currentPage={0}
                             allPredictions={suggestions}
                             index={index}
                         />
