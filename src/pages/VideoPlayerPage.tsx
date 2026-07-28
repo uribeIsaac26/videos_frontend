@@ -14,11 +14,19 @@ function VideoPlayerPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const page = searchParams.get("page") || "0";
+  const sort = searchParams.get("sort") || "id,desc";
+  const tag = searchParams.get("tag");
 
   const location = useLocation();
   const { videos, index, fromIA, fromDuplicados } = location.state || {};
 
   const videoUrl = `${API_URL}/api/videos/${id}/video`;
+
+  const buildListQuery = () => {
+    const params = new URLSearchParams({ page, sort });
+    if (tag) params.set("tag", tag);
+    return params.toString();
+  };
 
   const [showTagModal, setShowTagModal] = useState(false);
   const [availableTags, setAvailableTags] = useState<any[]>([]);
@@ -50,7 +58,7 @@ function VideoPlayerPage() {
     } else if (fromDuplicados) {
       navigate("/duplicados");
     } else {
-      navigate(`/?page=${page}`);
+      navigate(`/?${buildListQuery()}`);
     }
   };
 
@@ -101,7 +109,7 @@ function VideoPlayerPage() {
       } else if (fromDuplicados) {
         navigate("/duplicados");
       } else {
-        navigate(`/?page=${page}`);
+        navigate(`/?${buildListQuery()}`);
       }
     } catch (error) {
       console.error("Error eliminando el video ", error);
@@ -115,7 +123,7 @@ function VideoPlayerPage() {
     if (index < videos.length - 1) {
       const next = videos[index + 1];
 
-      navigate(`/videos/${next.id}?page=${page}`, {
+      navigate(`/videos/${next.id}?${buildListQuery()}`, {
         state: { videos, index: index + 1, fromIA, fromDuplicados }
       });
     }
@@ -127,7 +135,7 @@ function VideoPlayerPage() {
     if (index > 0) {
       const prev = videos[index - 1];
 
-      navigate(`/videos/${prev.id}?page=${page}`, {
+      navigate(`/videos/${prev.id}?${buildListQuery()}`, {
         state: { videos, index: index - 1, fromIA, fromDuplicados }
       });
     }

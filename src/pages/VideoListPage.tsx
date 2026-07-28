@@ -177,7 +177,9 @@ function videoListPage() {
                         video={video}
                         currentPage={page}
                         videos={videos}
-                        index={index} />
+                        index={index}
+                        sortBy={sortBy}
+                        tagParam={tagParam} />
                 ))}
             </div>
             <div className="pagination-container">
