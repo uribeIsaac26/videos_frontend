@@ -73,6 +73,13 @@ const UserMenu = () => {
                         📤 Subir Imagen
                     </button>
 
+                    <button
+                        className="dropdown-item"
+                        onClick={() => navigate("/manga")}
+                    >
+                        📚 Manga
+                    </button>
+
                     <div className="dropdown-divider"></div>
 
                     <button 

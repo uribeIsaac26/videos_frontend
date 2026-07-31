@@ -11,6 +11,8 @@ import DuplicadosPage from "./pages/DuplicadosPage";
 import ImageGalleryPage from "./pages/ImageGalleryPage";
 import UploadImagePage from "./pages/UploadImagePage";
 import ImageViewerPage from "./pages/ImageViewerPage";
+import MangaListPage from "./pages/MangaListPage";
+import MangaReaderPage from "./pages/MangaReaderPage";
 
 function App() {
   return (
@@ -98,6 +100,22 @@ function App() {
         element={
           <PrivateRoute>
             <ImageViewerPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/manga"
+        element={
+          <PrivateRoute>
+            <MangaListPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/manga/:id"
+        element={
+          <PrivateRoute>
+            <MangaReaderPage />
           </PrivateRoute>
         }
       />
