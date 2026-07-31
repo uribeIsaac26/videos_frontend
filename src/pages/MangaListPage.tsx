@@ -168,7 +168,7 @@ function MangaListPage() {
                 <input
                     type="text"
                     className="manga-filter-input"
-                    placeholder={filterType === "search" ? "ej. spanish male:bajo -female:alto" : `Nombre de ${FILTER_LABELS[filterType].toLowerCase()}`}
+                    placeholder={filterType === "search" ? 'ej. spanish male:bajo -tag:"full color"' : `Nombre de ${FILTER_LABELS[filterType].toLowerCase()}`}
                     value={filterValue}
                     onChange={(e) => setFilterValue(e.target.value)}
                 />

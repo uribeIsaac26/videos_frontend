@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams, useLocation } from "react-router-dom";
 import { getMangaById } from "../api/MangaApi";
-import type { MangaDetail } from "../types/Manga";
+import type { MangaDetail, MangaTag } from "../types/Manga";
 
 const API_URL = import.meta.env.VITE_API_URL;
+
+function displayTagName(tag: MangaTag) {
+  if (tag.esMale) return tag.name.replace(/^male:/, "");
+  if (tag.esFemale) return tag.name.replace(/^female:/, "");
+  return tag.name;
+}
 
 function MangaReaderPage() {
   const { id } = useParams();
@@ -135,7 +141,9 @@ function MangaReaderPage() {
       <div className="current-video-tags">
         {manga.tags.map((t) => (
           <span key={t.name} className="video-tag-badge">
-            {t.name}
+            {t.esMale && "♂ "}
+            {t.esFemale && "♀ "}
+            {displayTagName(t)}
           </span>
         ))}
       </div>
