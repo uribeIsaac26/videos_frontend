@@ -145,3 +145,28 @@ export async function getMangasByParody(
 
     return response.json();
 }
+
+export async function searchMangas(
+    q: string,
+    page: number,
+    size: number,
+    sort: string = "id,desc"
+): Promise<PagedManga> {
+    const params = new URLSearchParams({
+        q,
+        page: page.toString(),
+        size: size.toString(),
+        sort,
+    });
+
+    const response = await fetch(`${BASE_URL}/search?${params.toString()}`, {
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        handleUnauth(response);
+        throw new Error("Error al buscar los mangas");
+    }
+
+    return response.json();
+}

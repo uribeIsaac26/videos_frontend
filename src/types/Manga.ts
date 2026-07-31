@@ -24,7 +24,6 @@ export interface Manga {
     title: string;
     tipo: MangaTipo;
     language: string;
-    languageLocalName: string;
     fechaPublicacion: string;
     portadaUrl: string;
 }

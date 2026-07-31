@@ -5,18 +5,16 @@ import {
     getMangasByArtist,
     getMangasByGroup,
     getMangasByParody,
-    getMangasByTag,
+    searchMangas,
 } from "../api/MangaApi";
-import { getTagById, getTagsByName } from "../api/TagApi";
 import MangaCard from "../components/MangaCard";
 import { useSearchParams } from "react-router-dom";
 import UserMenu from "../components/UserMenu";
-import { useNavigate } from "react-router-dom";
 
-type FilterType = "tag" | "artist" | "group" | "parody";
+type FilterType = "search" | "artist" | "group" | "parody";
 
 const FILTER_LABELS: Record<FilterType, string> = {
-    tag: "Tag",
+    search: "Búsqueda",
     artist: "Artista",
     group: "Grupo",
     parody: "Parody",
@@ -28,17 +26,14 @@ function MangaListPage() {
     const page = Number(searchParams.get("page")) || 0;
     const [totalPages, setTotalPages] = useState(0);
     const [inputPage, setInputPage] = useState((page + 1).toString());
-    const navigate = useNavigate();
     const sortBy = searchParams.get("sort") || "id,desc";
 
-    const tagParam = searchParams.get("tag");
+    const qParam = searchParams.get("q");
     const artistParam = searchParams.get("artist");
     const groupParam = searchParams.get("group");
     const parodyParam = searchParams.get("parody");
-    const tagIds = tagParam ? tagParam.split(",").map(Number) : [];
-    const [tagNames, setTagNames] = useState<Record<number, string>>({});
 
-    const [filterType, setFilterType] = useState<FilterType>("tag");
+    const [filterType, setFilterType] = useState<FilterType>("search");
     const [filterValue, setFilterValue] = useState("");
 
     useEffect(() => {
@@ -47,7 +42,7 @@ function MangaListPage() {
 
     const buildQueryStringForCards = () => {
         const params = new URLSearchParams();
-        if (tagParam) params.set("tag", tagParam);
+        if (qParam) params.set("q", qParam);
         if (artistParam) params.set("artist", artistParam);
         if (groupParam) params.set("group", groupParam);
         if (parodyParam) params.set("parody", parodyParam);
@@ -57,7 +52,7 @@ function MangaListPage() {
     const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newSort = e.target.value;
         const params: Record<string, string> = { page: "0", sort: newSort };
-        if (tagParam) params.tag = tagParam;
+        if (qParam) params.q = qParam;
         if (artistParam) params.artist = artistParam;
         if (groupParam) params.group = groupParam;
         if (parodyParam) params.parody = parodyParam;
@@ -68,35 +63,13 @@ function MangaListPage() {
         setSearchParams({ page: "0", sort: sortBy });
     };
 
-    const removeOneTag = (idToRemove: number) => {
-        const filteredTags = tagIds.filter(id => id !== idToRemove);
-        const params: Record<string, string> = { page: "0", sort: sortBy };
-        if (filteredTags.length > 0) params.tag = filteredTags.join(",");
-        setSearchParams(params);
-    };
-
-    const handleFilterSubmit = async (e: React.FormEvent) => {
+    const handleFilterSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const value = filterValue.trim();
         if (!value) return;
 
-        if (filterType === "tag") {
-            try {
-                const names = value.split(",").map(n => n.trim()).filter(Boolean);
-                const tags = await getTagsByName(names);
-                if (tags.length === 0) {
-                    alert("No se encontraron tags con ese nombre");
-                    return;
-                }
-                setSearchParams({ page: "0", sort: sortBy, tag: tags.map(t => t.id).join(",") });
-            } catch (error) {
-                console.error("Error resolviendo tags", error);
-                alert("No se pudieron resolver los tags");
-            }
-            return;
-        }
-
-        setSearchParams({ page: "0", sort: sortBy, [filterType]: value });
+        const key = filterType === "search" ? "q" : filterType;
+        setSearchParams({ page: "0", sort: sortBy, [key]: value });
     };
 
     const handlePageJump = (e: React.FormEvent) => {
@@ -110,7 +83,7 @@ function MangaListPage() {
 
         if (!isNaN(newPage) && newPage >= 0 && newPage < totalPages) {
             const params: Record<string, string> = { page: newPage.toString(), sort: sortBy };
-            if (tagParam) params.tag = tagParam;
+            if (qParam) params.q = qParam;
             if (artistParam) params.artist = artistParam;
             if (groupParam) params.group = groupParam;
             if (parodyParam) params.parody = parodyParam;
@@ -123,15 +96,15 @@ function MangaListPage() {
     const fetchMangas = async (
         currentPage: number,
         currentSort: string,
-        tag: number[],
+        q: string | null,
         artist: string | null,
         group: string | null,
         parody: string | null
     ) => {
         try {
             let data;
-            if (tag && tag.length > 0) {
-                data = await getMangasByTag(tag, currentPage, 20, currentSort);
+            if (q) {
+                data = await searchMangas(q, currentPage, 20, currentSort);
             } else if (artist) {
                 data = await getMangasByArtist(artist, currentPage, 20, currentSort);
             } else if (group) {
@@ -149,29 +122,14 @@ function MangaListPage() {
     };
 
     useEffect(() => {
-        fetchMangas(page, sortBy, tagIds, artistParam, groupParam, parodyParam);
+        fetchMangas(page, sortBy, qParam, artistParam, groupParam, parodyParam);
         window.scrollTo({
             top: 0,
             behavior: "smooth"
         });
-    }, [page, tagParam, artistParam, groupParam, parodyParam, sortBy]);
+    }, [page, qParam, artistParam, groupParam, parodyParam, sortBy]);
 
-    useEffect(() => {
-        if (!tagParam) return;
-
-        tagIds.forEach(id => {
-            if (!tagNames[id]) {
-                getTagById(id).then(tag => {
-                    setTagNames(prev => {
-                        if (prev[id]) return prev;
-                        return { ...prev, [id]: tag.name };
-                    });
-                }).catch(() => {});
-            }
-        });
-    }, [tagParam]);
-
-    const hasActiveFilter = tagIds.length > 0 || !!artistParam || !!groupParam || !!parodyParam;
+    const hasActiveFilter = !!qParam || !!artistParam || !!groupParam || !!parodyParam;
 
     return (
         <div className="page-container">
@@ -202,7 +160,7 @@ function MangaListPage() {
                     value={filterType}
                     onChange={(e) => setFilterType(e.target.value as FilterType)}
                 >
-                    <option value="tag">Tag</option>
+                    <option value="search">Búsqueda</option>
                     <option value="artist">Artista</option>
                     <option value="group">Grupo</option>
                     <option value="parody">Parody</option>
@@ -210,7 +168,7 @@ function MangaListPage() {
                 <input
                     type="text"
                     className="manga-filter-input"
-                    placeholder={filterType === "tag" ? "Nombres de tag separados por coma" : `Nombre de ${FILTER_LABELS[filterType].toLowerCase()}`}
+                    placeholder={filterType === "search" ? "ej. spanish male:bajo -female:alto" : `Nombre de ${FILTER_LABELS[filterType].toLowerCase()}`}
                     value={filterValue}
                     onChange={(e) => setFilterValue(e.target.value)}
                 />
@@ -219,12 +177,12 @@ function MangaListPage() {
 
             {hasActiveFilter && (
                 <div className="filter-status-bar">
-                    {tagIds.map(id => (
-                        <div key={id} className="active-tag-chip">
-                            #{tagNames[id] || id}
-                            <button className="remove-filter-btn" onClick={() => removeOneTag(id)}>✕</button>
+                    {qParam && (
+                        <div className="active-tag-chip">
+                            {qParam}
+                            <button className="remove-filter-btn" onClick={clearFilters}>✕</button>
                         </div>
-                    ))}
+                    )}
                     {artistParam && (
                         <div className="active-tag-chip">
                             Artista: {artistParam}
@@ -243,9 +201,6 @@ function MangaListPage() {
                             <button className="remove-filter-btn" onClick={clearFilters}>✕</button>
                         </div>
                     )}
-                    {(tagIds.length > 1) && (
-                        <button className="clear-all-tags" onClick={() => navigate("/manga")}>Limpiar todo</button>
-                    )}
                 </div>
             )}
 
@@ -255,7 +210,7 @@ function MangaListPage() {
                     disabled={page === 0}
                     onClick={() => {
                         const newParams: Record<string, string> = { page: (page - 1).toString(), sort: sortBy };
-                        if (tagParam) newParams.tag = tagParam;
+                        if (qParam) newParams.q = qParam;
                         if (artistParam) newParams.artist = artistParam;
                         if (groupParam) newParams.group = groupParam;
                         if (parodyParam) newParams.parody = parodyParam;
@@ -283,7 +238,7 @@ function MangaListPage() {
                     disabled={page + 1 === totalPages}
                     onClick={() => {
                         const newParams: Record<string, string> = { page: (page + 1).toString(), sort: sortBy };
-                        if (tagParam) newParams.tag = tagParam;
+                        if (qParam) newParams.q = qParam;
                         if (artistParam) newParams.artist = artistParam;
                         if (groupParam) newParams.group = groupParam;
                         if (parodyParam) newParams.parody = parodyParam;
@@ -314,7 +269,7 @@ function MangaListPage() {
                     disabled={page === 0}
                     onClick={() => {
                         const newParams: Record<string, string> = { page: (page - 1).toString(), sort: sortBy };
-                        if (tagParam) newParams.tag = tagParam;
+                        if (qParam) newParams.q = qParam;
                         if (artistParam) newParams.artist = artistParam;
                         if (groupParam) newParams.group = groupParam;
                         if (parodyParam) newParams.parody = parodyParam;
@@ -343,7 +298,7 @@ function MangaListPage() {
                     disabled={page + 1 === totalPages}
                     onClick={() => {
                         const newParams: Record<string, string> = { page: (page + 1).toString(), sort: sortBy };
-                        if (tagParam) newParams.tag = tagParam;
+                        if (qParam) newParams.q = qParam;
                         if (artistParam) newParams.artist = artistParam;
                         if (groupParam) newParams.group = groupParam;
                         if (parodyParam) newParams.parody = parodyParam;

@@ -17,7 +17,7 @@ function MangaReaderPage() {
 
   const listPage = searchParams.get("page") || "0";
   const sort = searchParams.get("sort") || "id,desc";
-  const tagParam = searchParams.get("tag");
+  const qParam = searchParams.get("q");
   const artistParam = searchParams.get("artist");
   const groupParam = searchParams.get("group");
   const parodyParam = searchParams.get("parody");
@@ -25,7 +25,7 @@ function MangaReaderPage() {
 
   const buildListQuery = () => {
     const params = new URLSearchParams({ page: listPage, sort });
-    if (tagParam) params.set("tag", tagParam);
+    if (qParam) params.set("q", qParam);
     if (artistParam) params.set("artist", artistParam);
     if (groupParam) params.set("group", groupParam);
     if (parodyParam) params.set("parody", parodyParam);
@@ -126,7 +126,7 @@ function MangaReaderPage() {
 
       <div className="manga-meta-block">
         <span className="manga-tipo-badge">{manga.tipo}</span>
-        <span className="manga-language-badge">{manga.languageLocalName}</span>
+        <span className="manga-language-badge">{manga.language}</span>
         {manga.artists.length > 0 && <span className="manga-meta-item">Artista: {manga.artists.join(", ")}</span>}
         {manga.groups.length > 0 && <span className="manga-meta-item">Grupo: {manga.groups.join(", ")}</span>}
         {manga.parodys.length > 0 && <span className="manga-meta-item">Parody: {manga.parodys.join(", ")}</span>}

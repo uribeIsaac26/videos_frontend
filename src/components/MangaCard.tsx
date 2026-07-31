@@ -67,7 +67,7 @@ function MangaCard({ manga, currentPage, mangas, index, sortBy, queryString }: P
       <h3 className="manga-title">{manga.title}</h3>
       <div className="manga-meta-row">
         <span className="manga-tipo-badge">{manga.tipo}</span>
-        <span className="manga-language-badge">{manga.languageLocalName}</span>
+        <span className="manga-language-badge">{manga.language}</span>
       </div>
     </div>
   );
