@@ -174,6 +174,11 @@ function MangaListPage() {
                 />
                 <button type="submit" className="pagination-button">Buscar</button>
             </form>
+            {filterType === "search" && (
+                <p className="manga-filter-hint">
+                    Términos: <code>spanish</code>, <code>male:nombre</code>, <code>female:nombre</code>, <code>tag:nombre</code>, prefijo <code>-</code> para excluir. Valores con espacios van entre comillas: <code>tag:"full color"</code>.
+                </p>
+            )}
 
             {hasActiveFilter && (
                 <div className="filter-status-bar">

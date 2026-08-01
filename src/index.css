@@ -84,6 +84,20 @@ h1 {
   border-color: #3ea6ff;
 }
 
+.manga-filter-hint {
+  color: #aaaaaa;
+  font-size: 0.78rem;
+  margin: -10px 0 20px;
+}
+
+.manga-filter-hint code {
+  background-color: #272727;
+  color: #3ea6ff;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
 .manga-meta-block {
   display: flex;
   gap: 10px;
