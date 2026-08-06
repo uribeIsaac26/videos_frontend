@@ -5,6 +5,7 @@ import {
     getMangasByArtist,
     getMangasByGroup,
     getMangasByParody,
+    getMangaSugerencias,
     searchMangas,
 } from "../api/MangaApi";
 import MangaCard from "../components/MangaCard";
@@ -19,6 +20,17 @@ const FILTER_LABELS: Record<FilterType, string> = {
     group: "Grupo",
     parody: "Parody",
 };
+
+function getLastToken(value: string) {
+    const lastSpaceIndex = value.lastIndexOf(" ");
+    return lastSpaceIndex === -1 ? value.trim() : value.slice(lastSpaceIndex + 1);
+}
+
+function applySuggestion(value: string, suggestion: string) {
+    const lastSpaceIndex = value.lastIndexOf(" ");
+    const prefix = lastSpaceIndex === -1 ? "" : value.slice(0, lastSpaceIndex + 1);
+    return `${prefix}${suggestion} `;
+}
 
 function MangaListPage() {
     const [mangas, setMangas] = useState<Manga[]>([]);
@@ -35,10 +47,41 @@ function MangaListPage() {
 
     const [filterType, setFilterType] = useState<FilterType>("search");
     const [filterValue, setFilterValue] = useState("");
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [isSearchFocused, setIsSearchFocused] = useState(false);
 
     useEffect(() => {
         setInputPage((page + 1).toString());
     }, [page]);
+
+    useEffect(() => {
+        if (filterType !== "search") {
+            setSuggestions([]);
+            return;
+        }
+
+        const token = getLastToken(filterValue);
+        if (token.length < 2) {
+            setSuggestions([]);
+            return;
+        }
+
+        const timeoutId = setTimeout(() => {
+            getMangaSugerencias(token)
+                .then(setSuggestions)
+                .catch((error) => {
+                    console.error("Error obteniendo sugerencias", error);
+                    setSuggestions([]);
+                });
+        }, 300);
+
+        return () => clearTimeout(timeoutId);
+    }, [filterValue, filterType]);
+
+    const handleSuggestionClick = (suggestion: string) => {
+        setFilterValue((prev) => applySuggestion(prev, suggestion));
+        setSuggestions([]);
+    };
 
     const buildQueryStringForCards = () => {
         const params = new URLSearchParams();
@@ -165,18 +208,36 @@ function MangaListPage() {
                     <option value="group">Grupo</option>
                     <option value="parody">Parody</option>
                 </select>
-                <input
-                    type="text"
-                    className="manga-filter-input"
-                    placeholder={filterType === "search" ? 'ej. spanish male:bajo -tag:"full color"' : `Nombre de ${FILTER_LABELS[filterType].toLowerCase()}`}
-                    value={filterValue}
-                    onChange={(e) => setFilterValue(e.target.value)}
-                />
+                <div className="manga-search-input-wrapper">
+                    <input
+                        type="text"
+                        className="manga-filter-input"
+                        placeholder={filterType === "search" ? 'ej. spanish male:bajo -tag:"full color"' : `Nombre de ${FILTER_LABELS[filterType].toLowerCase()}`}
+                        value={filterValue}
+                        onChange={(e) => setFilterValue(e.target.value)}
+                        onFocus={() => setIsSearchFocused(true)}
+                        onBlur={() => setIsSearchFocused(false)}
+                    />
+                    {filterType === "search" && isSearchFocused && suggestions.length > 0 && (
+                        <div className="manga-search-suggestions">
+                            {suggestions.map((suggestion) => (
+                                <div
+                                    key={suggestion}
+                                    className="manga-search-suggestion-item"
+                                    onMouseDown={(e) => e.preventDefault()}
+                                    onClick={() => handleSuggestionClick(suggestion)}
+                                >
+                                    {suggestion}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
                 <button type="submit" className="pagination-button">Buscar</button>
             </form>
             {filterType === "search" && (
                 <p className="manga-filter-hint">
-                    Términos: <code>spanish</code>, <code>male:nombre</code>, <code>female:nombre</code>, <code>tag:nombre</code>, prefijo <code>-</code> para excluir. Valores con espacios van entre comillas: <code>tag:"full color"</code>.
+                    Términos: <code>spanish</code> o <code>language:spanish</code>, <code>male:nombre</code>, <code>female:nombre</code>, <code>tag:nombre</code>, <code>group:nombre</code>, prefijo <code>-</code> para excluir. Valores con espacios van entre comillas: <code>tag:"full color"</code>.
                 </p>
             )}
 

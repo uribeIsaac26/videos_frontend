@@ -42,6 +42,21 @@ export async function getMangaById(id: number): Promise<MangaDetail> {
     return response.json();
 }
 
+export async function getMangaSugerencias(q: string): Promise<string[]> {
+    const params = new URLSearchParams({ q });
+
+    const response = await fetch(`${BASE_URL}/sugerencias?${params.toString()}`, {
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        handleUnauth(response);
+        throw new Error("Error al obtener sugerencias");
+    }
+
+    return response.json();
+}
+
 export async function getMangaPaginas(
     mangaId: number,
     page: number,

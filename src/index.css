@@ -231,6 +231,40 @@ h1 {
   border-color: #3ea6ff;
 }
 
+.manga-search-input-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.manga-search-suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 220px;
+  background-color: #1a1a1a;
+  border: 1px solid #3f3f3f;
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 20;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.manga-search-suggestion-item {
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  color: #3ea6ff;
+  cursor: pointer;
+  border-bottom: 1px solid #272727;
+}
+
+.manga-search-suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.manga-search-suggestion-item:hover {
+  background-color: #272727;
+}
+
 .manga-filter-hint {
   color: #aaaaaa;
   font-size: 0.78rem;
