@@ -78,13 +78,18 @@ function MangaCard({ manga, currentPage, mangas, index, sortBy, queryString }: P
         )}
       </div>
 
-      {manga.parodys.length > 0 && (
-        <p className="manga-card-parody">{manga.parodys.join(", ")}</p>
-      )}
-
-      <div className="manga-meta-row">
-        <span className="manga-tipo-badge">{manga.tipo}</span>
-        <span className="manga-language-badge">{manga.language}</span>
+      <div className="manga-card-details">
+        {manga.parodys.length > 0 && (
+          <div className="manga-detail-row">
+            <span className="manga-parody-badge">{manga.parodys.join(", ")}</span>
+          </div>
+        )}
+        <div className="manga-detail-row">
+          <span className="manga-tipo-badge">{manga.tipo}</span>
+        </div>
+        <div className="manga-detail-row">
+          <span className="manga-language-badge">{manga.language}</span>
+        </div>
       </div>
 
       {manga.tags.length > 0 && (

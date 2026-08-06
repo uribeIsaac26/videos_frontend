@@ -46,14 +46,21 @@ h1 {
   font-weight: 500;
 }
 
-.manga-meta-row {
+.manga-card-details {
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
   margin-top: 6px;
+  margin-bottom: 8px;
+}
+
+.manga-detail-row {
+  display: flex;
   flex-wrap: wrap;
 }
 
-.manga-tipo-badge, .manga-language-badge {
+.manga-tipo-badge, .manga-language-badge, .manga-parody-badge {
   background-color: #272727;
   color: #3ea6ff;
   padding: 3px 8px;
@@ -91,13 +98,6 @@ h1 {
   font-size: 0.8rem;
   background-color: #111;
   border-radius: 12px;
-}
-
-.manga-card-parody {
-  margin: 0 0 8px;
-  font-size: 0.8rem;
-  color: #888888;
-  font-style: italic;
 }
 
 .manga-card-tags {
