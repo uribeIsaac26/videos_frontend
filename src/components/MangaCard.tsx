@@ -81,28 +81,33 @@ function MangaCard({ manga, currentPage, mangas, index, sortBy, queryString }: P
       <div className="manga-card-details">
         {manga.parodys.length > 0 && (
           <div className="manga-detail-row">
+            <span className="manga-detail-label">Parody:</span>
             <span className="manga-parody-badge">{manga.parodys.join(", ")}</span>
           </div>
         )}
         <div className="manga-detail-row">
+          <span className="manga-detail-label">Type:</span>
           <span className="manga-tipo-badge">{manga.tipo}</span>
         </div>
         <div className="manga-detail-row">
+          <span className="manga-detail-label">Language:</span>
           <span className="manga-language-badge">{manga.language}</span>
         </div>
+        {manga.tags.length > 0 && (
+          <div className="manga-detail-row manga-card-tags-row">
+            <span className="manga-detail-label">Tags:</span>
+            <div className="manga-card-tags">
+              {manga.tags.map((tag) => (
+                <span key={tag.name} className="video-tag-badge">
+                  {tag.esMale && "♂ "}
+                  {tag.esFemale && "♀ "}
+                  {displayTagName(tag)}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
-
-      {manga.tags.length > 0 && (
-        <div className="manga-card-tags">
-          {manga.tags.map((tag) => (
-            <span key={tag.name} className="video-tag-badge">
-              {tag.esMale && "♂ "}
-              {tag.esFemale && "♀ "}
-              {displayTagName(tag)}
-            </span>
-          ))}
-        </div>
-      )}
     </div>
   );
 }

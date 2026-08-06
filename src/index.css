@@ -57,7 +57,20 @@ h1 {
 
 .manga-detail-row {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
+  gap: 6px;
+}
+
+.manga-card-tags-row {
+  align-items: flex-start;
+}
+
+.manga-detail-label {
+  color: #aaaaaa;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .manga-tipo-badge, .manga-language-badge, .manga-parody-badge {
@@ -104,7 +117,6 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: 8px;
 }
 
 .manga-filter-form {
