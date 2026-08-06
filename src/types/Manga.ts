@@ -26,14 +26,14 @@ export interface Manga {
     language: string;
     fechaPublicacion: string;
     portadaUrl: string;
+    artists: string[];
+    parodys: string[];
+    tags: MangaTag[];
 }
 
 export interface MangaDetail extends Manga {
     japaneseTitle: string;
-    artists: string[];
     groups: string[];
-    parodys: string[];
-    tags: MangaTag[];
     paginas: MangaPagina[];
 }
 

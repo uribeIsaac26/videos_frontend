@@ -62,6 +62,51 @@ h1 {
   border: 1px solid #3f3f3f;
 }
 
+.manga-card-artists {
+  margin: 2px 0 8px;
+  font-size: 0.8rem;
+  color: #aaaaaa;
+}
+
+.manga-card-cover {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.manga-card-thumbnail {
+  width: 140px;
+  max-width: 55%;
+  border-radius: 12px;
+}
+
+.manga-card-thumbnail-placeholder {
+  width: 140px;
+  max-width: 55%;
+  aspect-ratio: 2 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+  font-size: 0.8rem;
+  background-color: #111;
+  border-radius: 12px;
+}
+
+.manga-card-parody {
+  margin: 0 0 8px;
+  font-size: 0.8rem;
+  color: #888888;
+  font-style: italic;
+}
+
+.manga-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
 .manga-filter-form {
   display: flex;
   align-items: center;

@@ -1,4 +1,4 @@
-import type { Manga } from "../types/Manga";
+import type { Manga, MangaTag } from "../types/Manga";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -11,6 +11,12 @@ interface Props {
   index: number;
   sortBy: string;
   queryString: string;
+}
+
+function displayTagName(tag: MangaTag) {
+  if (tag.esMale) return tag.name.replace(/^male:/, "");
+  if (tag.esFemale) return tag.name.replace(/^female:/, "");
+  return tag.name;
 }
 
 function MangaCard({ manga, currentPage, mangas, index, sortBy, queryString }: Props) {
@@ -58,17 +64,40 @@ function MangaCard({ manga, currentPage, mangas, index, sortBy, queryString }: P
 
   return (
     <div className="manga-card" onClick={handleClick} style={{ cursor: "pointer" }}>
-      {portadaSrc ? (
-        <img className="thumbnail" src={portadaSrc} alt={manga.title} />
-      ) : (
-        <div className="thumbnail-placeholder">Cargando...</div>
+      <h3 className="manga-title">{manga.title}</h3>
+
+      {manga.artists.length > 0 && (
+        <p className="manga-card-artists">{manga.artists.join(", ")}</p>
       )}
 
-      <h3 className="manga-title">{manga.title}</h3>
+      <div className="manga-card-cover">
+        {portadaSrc ? (
+          <img className="manga-card-thumbnail" src={portadaSrc} alt={manga.title} />
+        ) : (
+          <div className="manga-card-thumbnail-placeholder">Cargando...</div>
+        )}
+      </div>
+
+      {manga.parodys.length > 0 && (
+        <p className="manga-card-parody">{manga.parodys.join(", ")}</p>
+      )}
+
       <div className="manga-meta-row">
         <span className="manga-tipo-badge">{manga.tipo}</span>
         <span className="manga-language-badge">{manga.language}</span>
       </div>
+
+      {manga.tags.length > 0 && (
+        <div className="manga-card-tags">
+          {manga.tags.map((tag) => (
+            <span key={tag.name} className="video-tag-badge">
+              {tag.esMale && "♂ "}
+              {tag.esFemale && "♀ "}
+              {displayTagName(tag)}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
