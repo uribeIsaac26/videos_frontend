@@ -1,4 +1,4 @@
-import type { MangaDetail, PagedManga } from "../types/Manga";
+import type { MangaDetail, PagedManga, PagedMangaPaginas } from "../types/Manga";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const BASE_URL = `${API_URL}/api/mangas`;
@@ -37,6 +37,28 @@ export async function getMangaById(id: number): Promise<MangaDetail> {
     if (!response.ok) {
         handleUnauth(response);
         throw new Error("Error al obtener el manga");
+    }
+
+    return response.json();
+}
+
+export async function getMangaPaginas(
+    mangaId: number,
+    page: number,
+    size: number
+): Promise<PagedMangaPaginas> {
+    const params = new URLSearchParams({
+        page: page.toString(),
+        size: size.toString(),
+    });
+
+    const response = await fetch(`${BASE_URL}/${mangaId}/paginas?${params.toString()}`, {
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        handleUnauth(response);
+        throw new Error("Error al obtener las páginas del manga");
     }
 
     return response.json();

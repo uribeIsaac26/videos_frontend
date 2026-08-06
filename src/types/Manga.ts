@@ -46,3 +46,11 @@ export interface PagedManga {
     first: boolean;
     last: boolean;
 }
+
+export interface PagedMangaPaginas {
+    content: MangaPagina[];
+    totalElements: number;
+    totalPages: number;
+    size: number;
+    number: number;
+}
