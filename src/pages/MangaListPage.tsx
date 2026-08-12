@@ -32,6 +32,53 @@ function applySuggestion(value: string, suggestion: string) {
     return `${prefix}${suggestion} `;
 }
 
+// Prefijos de filtro soportados por el buscador de mangas (ver /api/mangas/search)
+const SEARCH_FILTER_PREFIXES = ["language", "tag", "male", "female", "group", "artist", "parody"];
+const PREFIX_TOKEN_RE = new RegExp(`^-?(?:${SEARCH_FILTER_PREFIXES.join("|")}):`);
+
+// El backend divide "q" por espacios, así que un valor multi-palabra sin comillas
+// (ej. "artist:John Doe") se partiría en dos tokens. Reemplazamos esos espacios por "_"
+// antes de enviar. Los valores con comillas (ej. tag:"full color") se dejan intactos.
+function encodeMultiWordFilters(raw: string): string {
+    const words = raw.trim().split(/\s+/).filter(Boolean);
+    const output: string[] = [];
+    let i = 0;
+
+    while (i < words.length) {
+        const word = words[i];
+        const prefixMatch = word.match(PREFIX_TOKEN_RE);
+
+        if (!prefixMatch) {
+            output.push(word);
+            i++;
+            continue;
+        }
+
+        const prefix = prefixMatch[0];
+        const value = word.slice(prefix.length);
+        i++;
+
+        if (value.startsWith('"')) {
+            const quotedParts = [value];
+            while (!quotedParts[quotedParts.length - 1].endsWith('"') && i < words.length) {
+                quotedParts.push(words[i]);
+                i++;
+            }
+            output.push(prefix + quotedParts.join(" "));
+            continue;
+        }
+
+        const valueParts = value.length > 0 ? [value] : [];
+        while (i < words.length && !PREFIX_TOKEN_RE.test(words[i])) {
+            valueParts.push(words[i]);
+            i++;
+        }
+        output.push(prefix + valueParts.join("_"));
+    }
+
+    return output.join(" ");
+}
+
 function MangaListPage() {
     const [mangas, setMangas] = useState<Manga[]>([]);
     const [searchParams, setSearchParams] = useSearchParams();
@@ -112,8 +159,12 @@ function MangaListPage() {
         const value = filterValue.trim();
         if (!value) return;
 
-        const key = filterType === "search" ? "q" : filterType;
-        setSearchParams({ page: "0", sort: sortBy, [key]: value });
+        if (filterType === "search") {
+            setSearchParams({ page: "0", sort: sortBy, q: encodeMultiWordFilters(value) });
+            return;
+        }
+
+        setSearchParams({ page: "0", sort: sortBy, [filterType]: value });
     };
 
     const handlePageJump = (e: React.FormEvent) => {
