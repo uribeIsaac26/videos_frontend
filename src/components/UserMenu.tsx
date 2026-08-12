@@ -63,14 +63,7 @@ const UserMenu = () => {
                         className="dropdown-item"
                         onClick={() => navigate("/gallery")}
                     >
-                        🖼️ Galería de Imágenes
-                    </button>
-
-                    <button
-                        className="dropdown-item"
-                        onClick={() => navigate("/gallery/upload")}
-                    >
-                        📤 Subir Imagen
+                        🖼️ Imágenes
                     </button>
 
                     <button

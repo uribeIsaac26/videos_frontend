@@ -4,6 +4,7 @@ import { getAllImages, getImagesByTag } from "../api/ImageApi";
 import ImageCard from "../components/ImageCard";
 import { useSearchParams } from "react-router-dom";
 import UserMenu from "../components/UserMenu";
+import GalleryMenu from "../components/GalleryMenu";
 import { useNavigate } from "react-router-dom";
 import { getTagById } from "../api/TagApi";
 
@@ -112,7 +113,8 @@ function ImageGalleryPage() {
                         </select>
                     </div>
 
-                    <div className="menu-container">
+                    <div className="menu-container" style={{ display: 'flex', gap: '10px' }}>
+                        <GalleryMenu />
                         <UserMenu />
                     </div>
                 </div>
