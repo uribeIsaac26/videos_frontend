@@ -13,7 +13,6 @@ function tagListPage() {
     const page = Number(searchParams.get("page")) || 0;
     const [totalPages, setTotalPages] = useState(0);
     const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
-    const [isSelectionMode, setIsSelectionMode] = useState(false); // 👈 El interruptor
     const navigate = useNavigate();
 
     const selectionModeRef = useRef(false);
@@ -47,10 +46,9 @@ function tagListPage() {
                 ? prev.filter(tagId => tagId !== id)
                 : [...prev, id];
 
-            // Actualizamos la referencia y el estado
+            // Actualizamos la referencia
             const hasItems = newList.length > 0;
             selectionModeRef.current = hasItems;
-            setIsSelectionMode(hasItems);
 
             return newList;
         });

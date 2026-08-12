@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { VideoTagTemporal } from "../types/VideoTagTemporal";
 import { getTagsByName } from "../api/TagApi";
-import type { Video } from "../types/Video";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -16,14 +15,6 @@ interface Props {
 function PredictionCard({ prediction, currentPage, allPredictions, index }: Props) {
   const navigate = useNavigate();
   const [thumbnailSrc, setThumbnailSrc] = useState<string | null>(null);
-
-  // Mapeamos la predicción a un objeto tipo Video "falso" para que el reproductor lo entienda
-  // Usamos los tags de la IA para que los veas en el reproductor si tu vista los muestra
-  const mockVideo: Partial<Video> = {
-    id: prediction.videoId,
-    title: `Sugerencia IA - Video ${prediction.videoId}`,
-    tags: prediction.tagsSuggest.split(',').map((tag, i) => ({ id: i, name: tag.trim() })) as any
-  };
 
 const handleClick = async () => {
 
