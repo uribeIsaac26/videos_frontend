@@ -35,7 +35,7 @@ function VideoPlayerPage() {
 
   useEffect(() => {
     if (showTagModal) {
-      getAllTags(0, 1000).then(response => {
+      getAllTags(0, 1000, "VIDEO").then(response => {
         const tags = response.content || response;
         setAvailableTags(tags)
       }

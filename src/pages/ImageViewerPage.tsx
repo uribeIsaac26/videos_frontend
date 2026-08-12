@@ -27,7 +27,7 @@ function ImageViewerPage() {
 
   useEffect(() => {
     if (showTagModal) {
-      getAllTags(0, 1000).then(response => {
+      getAllTags(0, 1000, "IMAGE").then(response => {
         const tags = response.content || response;
         setAvailableTags(tags)
       }

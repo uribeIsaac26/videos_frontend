@@ -1,14 +1,15 @@
-import type { Tag } from "../types/Tag";
+import type { Tag, TagType } from "../types/Tag";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const BASE_URL = `${API_URL}/api/tags`
 
 export async function getAllTags(
     page: number,
-    size: number
+    size: number,
+    type: TagType
 ): Promise<any> {
     const response = await fetch(
-        `${BASE_URL}?page=${page}&size=${size}&sort=id,desc`,
+        `${BASE_URL}?type=${type}&page=${page}&size=${size}&sort=id,desc`,
         {
             credentials: "include",
         }
@@ -35,8 +36,8 @@ export const getTagById = async (id: number) => {
     return response.json();
 }
 
-export const getTagsByName = async(tags: string []) => {
-    const response = await fetch(`${BASE_URL}/by-names?tags=${tags}`,
+export const getTagsByName = async(tags: string [], type: TagType) => {
+    const response = await fetch(`${BASE_URL}/by-names?tags=${tags}&type=${type}`,
         {
             credentials: "include",
         }
@@ -48,6 +49,7 @@ export const getTagsByName = async(tags: string []) => {
 
 export async function createTag(
     name: string,
+    type: TagType,
 ): Promise<any> {
     const response = await fetch(`${BASE_URL}`, {
         method: "POST",
@@ -55,7 +57,7 @@ export async function createTag(
             "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({ name: name })
+        body: JSON.stringify({ name: name, type: type })
     });
 
     if (!response.ok) {

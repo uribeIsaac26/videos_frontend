@@ -31,7 +31,7 @@ function tagListPage() {
 
     const fetchTags = async (currentPage: number) => {
         try {
-            const data = await getAllTags(currentPage, 50);
+            const data = await getAllTags(currentPage, 50, "VIDEO");
             setTags(data.content);
             setTotalPages(data.totalPages);
         } catch (error) {

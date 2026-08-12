@@ -31,7 +31,7 @@ const handleClick = async () => {
     allPredictions.flatMap(p => p.tagsSuggest.split(',').map(t => t.trim()))
   )];
 
-const allRealTags = await getTagsByName(allNames);
+const allRealTags = await getTagsByName(allNames, "VIDEO");
 
 console.log(allNames)
 console.log(allRealTags)

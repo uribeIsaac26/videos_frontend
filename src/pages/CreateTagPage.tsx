@@ -21,7 +21,7 @@ function CreateTagPage() {
     setMessage(null);
 
     try {
-      await createTag(tagName);
+      await createTag(tagName, "VIDEO");
       setMessage({ text: "¡Tag creado con éxito! 🎉", type: "success" });
       setTagName(""); // Limpiar input
       
