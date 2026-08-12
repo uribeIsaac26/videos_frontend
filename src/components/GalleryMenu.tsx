@@ -25,6 +25,16 @@ const GalleryMenu = () => {
                     >
                         📤 Subir Imagen
                     </button>
+
+                    <button
+                        className="dropdown-item"
+                        onClick={() => {
+                            setIsOpen(false);
+                            navigate("/gallery/tags");
+                        }}
+                    >
+                        🏷️ Administrar Tags
+                    </button>
                 </div>
             )}
         </div>

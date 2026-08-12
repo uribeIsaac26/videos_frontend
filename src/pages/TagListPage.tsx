@@ -1,13 +1,24 @@
 import { useEffect, useRef, useState } from "react";
-import type { Tag } from "../types/Tag";
+import type { Tag, TagType } from "../types/Tag";
 import { getAllTags } from "../api/TagApi";
 import { useSearchParams } from "react-router-dom";
 import UserMenu from "../components/UserMenu";
 import TagCard from "../components/TagCard";
 import { useNavigate } from "react-router-dom";
 
+interface Props {
+    type?: TagType;
+    title?: string;
+    basePath?: string;
+    createPath?: string;
+}
 
-function tagListPage() {
+function tagListPage({
+    type = "VIDEO",
+    title = "Tags",
+    basePath = "/",
+    createPath = "/tags/create",
+}: Props) {
     const [tags, setTags] = useState<Tag[]>([]);
     const [searchParams, setSearchParams] = useSearchParams();
     const page = Number(searchParams.get("page")) || 0;
@@ -26,15 +37,15 @@ function tagListPage() {
             top: 0,
             behavior: "smooth"
         });
-    }, [page]);
+    }, [page, type]);
 
     const fetchTags = async (currentPage: number) => {
         try {
-            const data = await getAllTags(currentPage, 50, "VIDEO");
+            const data = await getAllTags(currentPage, 50, type);
             setTags(data.content);
             setTotalPages(data.totalPages);
         } catch (error) {
-            console.error("Error cargando videos ", error);
+            console.error("Error cargando tags ", error);
         }
     };
 
@@ -83,7 +94,7 @@ function tagListPage() {
         if (selectionModeRef.current) {
             toggleTagSelection(id);
         } else {
-            navigate(`/?tag=${id}`);
+            navigate(`${basePath}?tag=${id}`);
         }
     };
 
@@ -91,15 +102,15 @@ function tagListPage() {
     const handleApplyFilters = () => {
         if (selectedTagIds.length > 0) {
             // Unimos los IDs por comas: ?tag=1,2,3
-            navigate(`/?tag=${selectedTagIds.join(",")}`);
+            navigate(`${basePath}?tag=${selectedTagIds.join(",")}`);
         }
     };
 
     return (
         <div className="page-container">
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                <h1>Tags</h1>
-                <button className="menu-toggle-button" onClick={() => navigate("/tags/create")}>
+                <h1>{title}</h1>
+                <button className="menu-toggle-button" onClick={() => navigate(createPath)}>
                     + Nuevo Tag
                 </button>
                 <UserMenu />

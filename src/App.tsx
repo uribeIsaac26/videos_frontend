@@ -96,6 +96,22 @@ function App() {
         }
       />
       <Route
+        path="/gallery/tags"
+        element={
+          <PrivateRoute>
+            <TagListPage type="IMAGE" title="Tags de Imágenes" basePath="/gallery" createPath="/gallery/tags/create" />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/gallery/tags/create"
+        element={
+          <PrivateRoute>
+            <CreateTagPage type="IMAGE" backPath="/gallery/tags" />
+          </PrivateRoute>
+        }
+      />
+      <Route
         path="/gallery/:id"
         element={
           <PrivateRoute>

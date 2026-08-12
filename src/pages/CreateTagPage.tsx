@@ -1,9 +1,14 @@
 import { useState } from "react";
 import { createTag } from "../api/TagApi"; // La función simplificada con fetch
 import { useNavigate } from "react-router-dom";
+import type { TagType } from "../types/Tag";
 
+interface Props {
+  type?: TagType;
+  backPath?: string;
+}
 
-function CreateTagPage() {
+function CreateTagPage({ type = "VIDEO", backPath = "/tags" }: Props) {
   const [tagName, setTagName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
@@ -21,12 +26,12 @@ function CreateTagPage() {
     setMessage(null);
 
     try {
-      await createTag(tagName, "VIDEO");
+      await createTag(tagName, type);
       setMessage({ text: "¡Tag creado con éxito! 🎉", type: "success" });
       setTagName(""); // Limpiar input
-      
+
       // Opcional: Redirigir a la lista de tags después de 1.5 segundos
-      setTimeout(() => navigate("/tags"), 1500);
+      setTimeout(() => navigate(backPath), 1500);
       
     } catch (error) {
       setMessage({ text: "Error al crear el tag. Quizás ya existe. ❌", type: "error" });
@@ -38,7 +43,7 @@ function CreateTagPage() {
 
   return (
     <div className="upload-page">
-      <button className="back-button" onClick={() => navigate("/tags")}>
+      <button className="back-button" onClick={() => navigate(backPath)}>
         Volver a la lista
       </button>
 
