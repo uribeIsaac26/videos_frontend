@@ -1,6 +1,7 @@
-import type { Manga, MangaTag } from "../types/Manga";
+import type { Manga } from "../types/Manga";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { buildLanguageSearchQuery, buildTagSearchQuery, displayTagName } from "../utils/mangaSearch";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -11,12 +12,6 @@ interface Props {
   index: number;
   sortBy: string;
   queryString: string;
-}
-
-function displayTagName(tag: MangaTag) {
-  if (tag.esMale) return tag.name.replace(/^male:/, "");
-  if (tag.esFemale) return tag.name.replace(/^female:/, "");
-  return tag.name;
 }
 
 function MangaCard({ manga, currentPage, mangas, index, sortBy, queryString }: Props) {
@@ -31,6 +26,12 @@ function MangaCard({ manga, currentPage, mangas, index, sortBy, queryString }: P
     navigate(`/manga/${manga.id}?${params.toString()}`, {
       state: { mangas, index }
     });
+  };
+
+  const navigateToFilter = (e: React.MouseEvent, params: Record<string, string>) => {
+    e.stopPropagation();
+    const query = new URLSearchParams({ page: "0", sort: sortBy, ...params });
+    navigate(`/manga?${query.toString()}`);
   };
 
   useEffect(() => {
@@ -67,7 +68,20 @@ function MangaCard({ manga, currentPage, mangas, index, sortBy, queryString }: P
       <h3 className="manga-title">{manga.title}</h3>
 
       {manga.artists.length > 0 && (
-        <p className="manga-card-artists">{manga.artists.join(", ")}</p>
+        <p className="manga-card-artists">
+          {manga.artists.map((artist, i) => (
+            <span key={artist}>
+              <button
+                type="button"
+                className="manga-inline-link"
+                onClick={(e) => navigateToFilter(e, { artist })}
+              >
+                {artist}
+              </button>
+              {i < manga.artists.length - 1 && ", "}
+            </span>
+          ))}
+        </p>
       )}
 
       <div className="manga-card-cover">
@@ -82,7 +96,16 @@ function MangaCard({ manga, currentPage, mangas, index, sortBy, queryString }: P
         {manga.parodys.length > 0 && (
           <div className="manga-detail-row">
             <span className="manga-detail-label">Parody:</span>
-            <span className="manga-parody-badge">{manga.parodys.join(", ")}</span>
+            {manga.parodys.map((parody) => (
+              <button
+                key={parody}
+                type="button"
+                className="manga-parody-badge manga-clickable-badge"
+                onClick={(e) => navigateToFilter(e, { parody })}
+              >
+                {parody}
+              </button>
+            ))}
           </div>
         )}
         <div className="manga-detail-row">
@@ -91,18 +114,29 @@ function MangaCard({ manga, currentPage, mangas, index, sortBy, queryString }: P
         </div>
         <div className="manga-detail-row">
           <span className="manga-detail-label">Language:</span>
-          <span className="manga-language-badge">{manga.language}</span>
+          <button
+            type="button"
+            className="manga-language-badge manga-clickable-badge"
+            onClick={(e) => navigateToFilter(e, { q: buildLanguageSearchQuery(manga.language) })}
+          >
+            {manga.language}
+          </button>
         </div>
         {manga.tags.length > 0 && (
           <div className="manga-detail-row manga-card-tags-row">
             <span className="manga-detail-label">Tags:</span>
             <div className="manga-card-tags">
               {manga.tags.map((tag) => (
-                <span key={tag.name} className="video-tag-badge">
+                <button
+                  key={tag.name}
+                  type="button"
+                  className="video-tag-badge manga-clickable-badge"
+                  onClick={(e) => navigateToFilter(e, { q: buildTagSearchQuery(tag) })}
+                >
                   {tag.esMale && "♂ "}
                   {tag.esFemale && "♀ "}
                   {displayTagName(tag)}
-                </span>
+                </button>
               ))}
             </div>
           </div>

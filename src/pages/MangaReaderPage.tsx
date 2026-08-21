@@ -1,17 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams, useLocation } from "react-router-dom";
 import { getMangaById, getMangaPaginas } from "../api/MangaApi";
-import type { MangaDetail, MangaPagina, MangaTag } from "../types/Manga";
+import type { MangaDetail, MangaPagina } from "../types/Manga";
 import MangaPageThumbnail from "../components/MangaPageThumbnail";
+import { buildLanguageSearchQuery, buildTagSearchQuery, displayTagName } from "../utils/mangaSearch";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const GALLERY_PAGE_SIZE = 20;
-
-function displayTagName(tag: MangaTag) {
-  if (tag.esMale) return tag.name.replace(/^male:/, "");
-  if (tag.esFemale) return tag.name.replace(/^female:/, "");
-  return tag.name;
-}
 
 function MangaReaderPage() {
   const { id } = useParams();
@@ -47,6 +42,11 @@ function MangaReaderPage() {
     if (groupParam) params.set("group", groupParam);
     if (parodyParam) params.set("parody", parodyParam);
     return params.toString();
+  };
+
+  const navigateToFilter = (params: Record<string, string>) => {
+    const query = new URLSearchParams({ page: "0", sort, ...params });
+    navigate(`/manga?${query.toString()}`);
   };
 
   useEffect(() => {
@@ -249,14 +249,36 @@ function MangaReaderPage() {
           <h1 className="player-title">{manga.title}</h1>
 
           {manga.artists.length > 0 && (
-            <p className="manga-summary-artists">{manga.artists.join(", ")}</p>
+            <p className="manga-summary-artists">
+              {manga.artists.map((artist, i) => (
+                <span key={artist}>
+                  <button
+                    type="button"
+                    className="manga-inline-link"
+                    onClick={() => navigateToFilter({ artist })}
+                  >
+                    {artist}
+                  </button>
+                  {i < manga.artists.length - 1 && ", "}
+                </span>
+              ))}
+            </p>
           )}
 
           <div className="manga-card-details">
             {manga.groups.length > 0 && (
               <div className="manga-detail-row">
                 <span className="manga-detail-label">Group:</span>
-                <span className="manga-group-badge">{manga.groups.join(", ")}</span>
+                {manga.groups.map((group) => (
+                  <button
+                    key={group}
+                    type="button"
+                    className="manga-group-badge manga-clickable-badge"
+                    onClick={() => navigateToFilter({ group })}
+                  >
+                    {group}
+                  </button>
+                ))}
               </div>
             )}
             <div className="manga-detail-row">
@@ -265,12 +287,27 @@ function MangaReaderPage() {
             </div>
             <div className="manga-detail-row">
               <span className="manga-detail-label">Language:</span>
-              <span className="manga-language-badge">{manga.language}</span>
+              <button
+                type="button"
+                className="manga-language-badge manga-clickable-badge"
+                onClick={() => navigateToFilter({ q: buildLanguageSearchQuery(manga.language) })}
+              >
+                {manga.language}
+              </button>
             </div>
             {manga.parodys.length > 0 && (
               <div className="manga-detail-row">
                 <span className="manga-detail-label">Series:</span>
-                <span className="manga-parody-badge">{manga.parodys.join(", ")}</span>
+                {manga.parodys.map((parody) => (
+                  <button
+                    key={parody}
+                    type="button"
+                    className="manga-parody-badge manga-clickable-badge"
+                    onClick={() => navigateToFilter({ parody })}
+                  >
+                    {parody}
+                  </button>
+                ))}
               </div>
             )}
             {manga.tags.length > 0 && (
@@ -278,11 +315,16 @@ function MangaReaderPage() {
                 <span className="manga-detail-label">Tags:</span>
                 <div className="manga-card-tags">
                   {manga.tags.map((tag) => (
-                    <span key={tag.name} className="video-tag-badge">
+                    <button
+                      key={tag.name}
+                      type="button"
+                      className="video-tag-badge manga-clickable-badge"
+                      onClick={() => navigateToFilter({ q: buildTagSearchQuery(tag) })}
+                    >
                       {tag.esMale && "♂ "}
                       {tag.esFemale && "♀ "}
                       {displayTagName(tag)}
-                    </span>
+                    </button>
                   ))}
                 </div>
               </div>
