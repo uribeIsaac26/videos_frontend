@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams, useLocation } from "react-router-dom";
-import { getMangaById, getMangaPaginas } from "../api/MangaApi";
+import { deleteManga, getMangaById, getMangaPaginas } from "../api/MangaApi";
 import type { MangaDetail, MangaPagina } from "../types/Manga";
 import MangaPageThumbnail from "../components/MangaPageThumbnail";
 import {
@@ -157,6 +157,22 @@ function MangaReaderPage() {
 
   const handleExit = () => {
     navigate(`/manga?${buildListQuery()}`);
+  };
+
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm(
+      "Estas seguro de que quieres eliminar el manga?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await deleteManga(Number(id));
+      navigate(`/manga?${buildListQuery()}`);
+    } catch (error) {
+      console.error("Error eliminando el manga ", error);
+      alert("No se pudo eliminar el manga");
+    }
   };
 
   const nextManga = () => {
@@ -335,6 +351,10 @@ function MangaReaderPage() {
               </div>
             )}
           </div>
+
+          <button className="back-button delete-button" onClick={handleDelete}>
+            🗑️ Eliminar
+          </button>
 
           <h2 className="manga-gallery-heading">Páginas</h2>
 

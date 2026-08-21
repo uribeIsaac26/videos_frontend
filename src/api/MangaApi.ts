@@ -29,6 +29,18 @@ export async function getAllMangas(
     return response.json();
 }
 
+export async function deleteManga(id: number) {
+    const response = await fetch(`${BASE_URL}/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        handleUnauth(response);
+        throw new Error("No se pudo eliminar el manga");
+    }
+}
+
 export async function getMangaById(id: number): Promise<MangaDetail> {
     const response = await fetch(`${BASE_URL}/${id}`, {
         credentials: "include",
