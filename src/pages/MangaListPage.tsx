@@ -110,6 +110,26 @@ function MangaListPage() {
         setInputPage((page + 1).toString());
     }, [page]);
 
+    // Refleja en la barra de búsqueda el filtro activo (ej. al llegar desde los
+    // botones de artist/language/tag en la card) para poder seguir agregando filtros.
+    useEffect(() => {
+        if (qParam) {
+            setFilterType("search");
+            setFilterValue(qParam);
+        } else if (artistParam) {
+            setFilterType("artist");
+            setFilterValue(artistParam);
+        } else if (groupParam) {
+            setFilterType("group");
+            setFilterValue(groupParam);
+        } else if (parodyParam) {
+            setFilterType("parody");
+            setFilterValue(parodyParam);
+        } else {
+            setFilterValue("");
+        }
+    }, [qParam, artistParam, groupParam, parodyParam]);
+
     useEffect(() => {
         if (filterType !== "search") {
             setSuggestions([]);
