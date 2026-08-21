@@ -68,20 +68,18 @@ function MangaCard({ manga, currentPage, mangas, index, sortBy, queryString }: P
       <h3 className="manga-title">{manga.title}</h3>
 
       {manga.artists.length > 0 && (
-        <p className="manga-card-artists">
-          {manga.artists.map((artist, i) => (
-            <span key={artist}>
-              <button
-                type="button"
-                className="manga-inline-link"
-                onClick={(e) => navigateToFilter(e, { artist })}
-              >
-                {artist}
-              </button>
-              {i < manga.artists.length - 1 && ", "}
-            </span>
+        <div className="manga-card-artists">
+          {manga.artists.map((artist) => (
+            <button
+              key={artist}
+              type="button"
+              className="manga-artist-badge manga-clickable-badge"
+              onClick={(e) => navigateToFilter(e, { artist })}
+            >
+              {artist}
+            </button>
           ))}
-        </p>
+        </div>
       )}
 
       <div className="manga-card-cover">

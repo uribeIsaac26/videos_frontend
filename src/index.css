@@ -73,7 +73,7 @@ h1 {
   white-space: nowrap;
 }
 
-.manga-tipo-badge, .manga-language-badge, .manga-parody-badge, .manga-group-badge {
+.manga-tipo-badge, .manga-language-badge, .manga-parody-badge, .manga-group-badge, .manga-artist-badge {
   background-color: #272727;
   color: #3ea6ff;
   padding: 3px 8px;
@@ -92,25 +92,11 @@ h1 {
   filter: brightness(1.4);
 }
 
-.manga-inline-link {
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-}
-
-.manga-inline-link:hover {
-  color: #3ea6ff;
-  text-decoration: underline;
-}
-
 .manga-card-artists {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
   margin: 2px 0 8px;
-  font-size: 0.8rem;
-  color: #aaaaaa;
 }
 
 .manga-card-cover {
@@ -172,10 +158,11 @@ h1 {
 }
 
 .manga-summary-artists {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
   margin: 0 0 10px;
-  font-size: 0.95rem;
-  color: #aaaaaa;
-  text-align: center;
 }
 
 .manga-gallery-heading {

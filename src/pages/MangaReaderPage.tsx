@@ -249,20 +249,18 @@ function MangaReaderPage() {
           <h1 className="player-title">{manga.title}</h1>
 
           {manga.artists.length > 0 && (
-            <p className="manga-summary-artists">
-              {manga.artists.map((artist, i) => (
-                <span key={artist}>
-                  <button
-                    type="button"
-                    className="manga-inline-link"
-                    onClick={() => navigateToFilter({ artist })}
-                  >
-                    {artist}
-                  </button>
-                  {i < manga.artists.length - 1 && ", "}
-                </span>
+            <div className="manga-summary-artists">
+              {manga.artists.map((artist) => (
+                <button
+                  key={artist}
+                  type="button"
+                  className="manga-artist-badge manga-clickable-badge"
+                  onClick={() => navigateToFilter({ artist })}
+                >
+                  {artist}
+                </button>
               ))}
-            </p>
+            </div>
           )}
 
           <div className="manga-card-details">
