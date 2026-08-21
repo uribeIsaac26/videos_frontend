@@ -1,7 +1,13 @@
 import type { Manga } from "../types/Manga";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { buildLanguageSearchQuery, buildTagSearchQuery, displayTagName } from "../utils/mangaSearch";
+import {
+  buildArtistSearchQuery,
+  buildLanguageSearchQuery,
+  buildParodySearchQuery,
+  buildTagSearchQuery,
+  displayTagName,
+} from "../utils/mangaSearch";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -74,7 +80,7 @@ function MangaCard({ manga, currentPage, mangas, index, sortBy, queryString }: P
               key={artist}
               type="button"
               className="manga-artist-badge manga-clickable-badge"
-              onClick={(e) => navigateToFilter(e, { artist })}
+              onClick={(e) => navigateToFilter(e, { q: buildArtistSearchQuery(artist) })}
             >
               {artist}
             </button>
@@ -99,7 +105,7 @@ function MangaCard({ manga, currentPage, mangas, index, sortBy, queryString }: P
                 key={parody}
                 type="button"
                 className="manga-parody-badge manga-clickable-badge"
-                onClick={(e) => navigateToFilter(e, { parody })}
+                onClick={(e) => navigateToFilter(e, { q: buildParodySearchQuery(parody) })}
               >
                 {parody}
               </button>

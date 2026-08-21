@@ -21,3 +21,15 @@ export function buildTagSearchQuery(tag: MangaTag): string {
   if (tag.esFemale) return `female:${encodeSearchValue(displayTagName(tag))}`;
   return `tag:${encodeSearchValue(tag.name)}`;
 }
+
+export function buildArtistSearchQuery(artist: string): string {
+  return `artist:${encodeSearchValue(artist)}`;
+}
+
+export function buildGroupSearchQuery(group: string): string {
+  return `group:${encodeSearchValue(group)}`;
+}
+
+export function buildParodySearchQuery(parody: string): string {
+  return `parody:${encodeSearchValue(parody)}`;
+}

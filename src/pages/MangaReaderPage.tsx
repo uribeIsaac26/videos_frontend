@@ -3,7 +3,14 @@ import { useNavigate, useParams, useSearchParams, useLocation } from "react-rout
 import { getMangaById, getMangaPaginas } from "../api/MangaApi";
 import type { MangaDetail, MangaPagina } from "../types/Manga";
 import MangaPageThumbnail from "../components/MangaPageThumbnail";
-import { buildLanguageSearchQuery, buildTagSearchQuery, displayTagName } from "../utils/mangaSearch";
+import {
+  buildArtistSearchQuery,
+  buildGroupSearchQuery,
+  buildLanguageSearchQuery,
+  buildParodySearchQuery,
+  buildTagSearchQuery,
+  displayTagName,
+} from "../utils/mangaSearch";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const GALLERY_PAGE_SIZE = 20;
@@ -255,7 +262,7 @@ function MangaReaderPage() {
                   key={artist}
                   type="button"
                   className="manga-artist-badge manga-clickable-badge"
-                  onClick={() => navigateToFilter({ artist })}
+                  onClick={() => navigateToFilter({ q: buildArtistSearchQuery(artist) })}
                 >
                   {artist}
                 </button>
@@ -272,7 +279,7 @@ function MangaReaderPage() {
                     key={group}
                     type="button"
                     className="manga-group-badge manga-clickable-badge"
-                    onClick={() => navigateToFilter({ group })}
+                    onClick={() => navigateToFilter({ q: buildGroupSearchQuery(group) })}
                   >
                     {group}
                   </button>
@@ -301,7 +308,7 @@ function MangaReaderPage() {
                     key={parody}
                     type="button"
                     className="manga-parody-badge manga-clickable-badge"
-                    onClick={() => navigateToFilter({ parody })}
+                    onClick={() => navigateToFilter({ q: buildParodySearchQuery(parody) })}
                   >
                     {parody}
                   </button>
