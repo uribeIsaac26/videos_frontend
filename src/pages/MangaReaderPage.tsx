@@ -369,7 +369,7 @@ function MangaReaderPage() {
 
           <div className="nav-group">
             <button className="back-button leido-button" onClick={handleToggleLeido}>
-              {manga.leido ? "🌶️ Marcar como no leído" : "🌶️ Marcar como leído"}
+              {manga.leido ? "✔️ Marcar como no leído" : "✔️ Marcar como leído"}
             </button>
             <button className="back-button delete-button" onClick={handleDelete}>
               🗑️ Eliminar
