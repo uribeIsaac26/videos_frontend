@@ -36,6 +36,12 @@ function applySuggestion(value: string, suggestion: string) {
 const SEARCH_FILTER_PREFIXES = ["language", "tag", "male", "female", "group", "artist", "parody"];
 const PREFIX_TOKEN_RE = new RegExp(`^-?(?:${SEARCH_FILTER_PREFIXES.join("|")}):`);
 
+// Prefijos cuyo valor es normalmente un nombre propio de varias palabras (ej. "artist:John Doe").
+// Solo para estos se continúa uniendo las palabras siguientes con "_" sin comillas.
+// Para "tag"/"male"/"female"/"language" el valor es de una sola palabra por defecto; si se
+// necesita un valor multi-palabra (ej. tag:"full color") debe ir entre comillas.
+const MULTIWORD_UNQUOTED_PREFIXES = new Set(["artist", "group", "parody"]);
+
 // El backend divide "q" por espacios, así que un valor multi-palabra sin comillas
 // (ej. "artist:John Doe") se partiría en dos tokens. Reemplazamos esos espacios por "_"
 // antes de enviar. Los valores con comillas (ej. tag:"full color") se dejan intactos.
@@ -55,6 +61,7 @@ function encodeMultiWordFilters(raw: string): string {
         }
 
         const prefix = prefixMatch[0];
+        const filterName = prefix.replace(/^-/, "").replace(/:$/, "");
         const value = word.slice(prefix.length);
         i++;
 
@@ -69,9 +76,11 @@ function encodeMultiWordFilters(raw: string): string {
         }
 
         const valueParts = value.length > 0 ? [value] : [];
-        while (i < words.length && !PREFIX_TOKEN_RE.test(words[i])) {
-            valueParts.push(words[i]);
-            i++;
+        if (MULTIWORD_UNQUOTED_PREFIXES.has(filterName)) {
+            while (i < words.length && !PREFIX_TOKEN_RE.test(words[i])) {
+                valueParts.push(words[i]);
+                i++;
+            }
         }
         output.push(prefix + valueParts.join("_"));
     }
