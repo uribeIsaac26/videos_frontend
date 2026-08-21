@@ -125,6 +125,12 @@ function MangaReaderPage() {
     setSearchParams(params);
   };
 
+  const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
+    const { left, width } = e.currentTarget.getBoundingClientRect();
+    const clickedLeftHalf = e.clientX - left < width / 2;
+    goToPage(clickedLeftHalf ? pageNum - 1 : pageNum + 1);
+  };
+
   const openPage = (orden: number) => {
     const params = new URLSearchParams(searchParams);
     params.set("p", orden.toString());
@@ -253,9 +259,10 @@ function MangaReaderPage() {
 
           <div className="image-container">
             <img
-              className="image-viewer"
+              className="image-viewer manga-reader-image"
               src={`${API_URL}/api/mangas/${id}/paginas/${pageNum}/imagen`}
               alt={`${manga.title} - página ${pageNum}`}
+              onClick={handleImageClick}
             />
           </div>
 
