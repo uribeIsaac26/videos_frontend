@@ -41,6 +41,22 @@ export async function deleteManga(id: number) {
     }
 }
 
+export async function setMangaLeido(id: number, leido: boolean): Promise<MangaDetail> {
+    const response = await fetch(`${BASE_URL}/${id}/leido`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ leido }),
+    });
+
+    if (!response.ok) {
+        handleUnauth(response);
+        throw new Error("No se pudo actualizar el estado de leido del manga");
+    }
+
+    return response.json();
+}
+
 export async function getMangaById(id: number): Promise<MangaDetail> {
     const response = await fetch(`${BASE_URL}/${id}`, {
         credentials: "include",

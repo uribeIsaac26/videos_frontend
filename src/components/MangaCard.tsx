@@ -71,7 +71,10 @@ function MangaCard({ manga, currentPage, mangas, index, sortBy, queryString }: P
 
   return (
     <div className="manga-card" onClick={handleClick} style={{ cursor: "pointer" }}>
-      <h3 className="manga-title">{manga.title}</h3>
+      <h3 className="manga-title">
+        {manga.title}
+        {manga.leido && <span className="manga-leido-dot" title="Leído" />}
+      </h3>
 
       {manga.artists.length > 0 && (
         <div className="manga-card-artists">

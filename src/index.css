@@ -46,6 +46,16 @@ h1 {
   font-weight: 500;
 }
 
+.manga-leido-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-left: 8px;
+  border-radius: 50%;
+  background-color: #2ecc71;
+  vertical-align: middle;
+}
+
 .manga-card-details {
   display: flex;
   flex-direction: column;

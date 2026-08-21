@@ -29,6 +29,7 @@ export interface Manga {
     artists: string[];
     parodys: string[];
     tags: MangaTag[];
+    leido: boolean;
 }
 
 export interface MangaDetail extends Manga {

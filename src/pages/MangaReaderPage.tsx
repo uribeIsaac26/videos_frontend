@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams, useLocation } from "react-router-dom";
-import { deleteManga, getMangaById, getMangaPaginas } from "../api/MangaApi";
+import { deleteManga, getMangaById, getMangaPaginas, setMangaLeido } from "../api/MangaApi";
 import type { MangaDetail, MangaPagina } from "../types/Manga";
 import MangaPageThumbnail from "../components/MangaPageThumbnail";
 import {
@@ -175,6 +175,18 @@ function MangaReaderPage() {
     }
   };
 
+  const handleToggleLeido = async () => {
+    if (!manga) return;
+
+    try {
+      const updated = await setMangaLeido(Number(id), !manga.leido);
+      setManga(updated);
+    } catch (error) {
+      console.error("Error actualizando el estado de leido ", error);
+      alert("No se pudo actualizar el estado de leído");
+    }
+  };
+
   const nextManga = () => {
     if (!mangas) return;
 
@@ -269,7 +281,10 @@ function MangaReaderPage() {
             )}
           </div>
 
-          <h1 className="player-title">{manga.title}</h1>
+          <h1 className="player-title">
+            {manga.title}
+            {manga.leido && <span className="manga-leido-dot" title="Leído" />}
+          </h1>
 
           {manga.artists.length > 0 && (
             <div className="manga-summary-artists">
@@ -352,9 +367,14 @@ function MangaReaderPage() {
             )}
           </div>
 
-          <button className="back-button delete-button" onClick={handleDelete}>
-            🗑️ Eliminar
-          </button>
+          <div className="nav-group">
+            <button className="back-button leido-button" onClick={handleToggleLeido}>
+              {manga.leido ? "🌶️ Marcar como no leído" : "🌶️ Marcar como leído"}
+            </button>
+            <button className="back-button delete-button" onClick={handleDelete}>
+              🗑️ Eliminar
+            </button>
+          </div>
 
           <h2 className="manga-gallery-heading">Páginas</h2>
 
