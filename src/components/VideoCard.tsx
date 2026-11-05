@@ -7,13 +7,14 @@ const API_URL = import.meta.env.VITE_API_URL;
 interface Props {
   video: Video;
   currentPage: number;
+  totalPages: number;
   videos: Video[];
   index: number;
   sortBy: string;
   tagParam?: string | null;
 }
 
-function VideoCard({ video, currentPage, videos, index, sortBy, tagParam }: Props) {
+function VideoCard({ video, currentPage, totalPages, videos, index, sortBy, tagParam }: Props) {
 
   const navigate = useNavigate();
   const [thumbnailSrc, setThumbnailSrc] = useState<string | null>(null);
@@ -24,7 +25,8 @@ function VideoCard({ video, currentPage, videos, index, sortBy, tagParam }: Prop
     navigate(`/videos/${video.id}?${params.toString()}`, {
       state: {
         videos,
-        index
+        index,
+        totalPages
       }
     }
     );

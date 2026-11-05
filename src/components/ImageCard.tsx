@@ -8,9 +8,10 @@ interface Props {
   image: Image;
   images: Image[];
   index: number;
+  totalPages: number;
 }
 
-function ImageCard({ image, images, index }: Props) {
+function ImageCard({ image, images, index, totalPages }: Props) {
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -23,7 +24,8 @@ function ImageCard({ image, images, index }: Props) {
       state: {
         images,
         index,
-        from
+        from,
+        totalPages
       }
     }
     );

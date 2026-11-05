@@ -3,6 +3,21 @@ import type { Video } from "../types/Video";
 const API_URL = import.meta.env.VITE_API_URL;
 const BASE_URL = `${API_URL}/api/videos`;
 
+// Tamaño de página de la lista de videos; el reproductor lo usa para pedir páginas vecinas
+export const VIDEO_PAGE_SIZE = 10;
+
+// Página de la lista de videos con el mismo orden y filtro de tags que usa VideoListPage
+export async function getVideoListPage(
+  page: number,
+  sort: string,
+  tagParam?: string | null
+): Promise<{ content: Video[]; totalPages: number }> {
+  const tagIds = tagParam ? tagParam.split(",").map(Number) : [];
+  return tagIds.length > 0
+    ? getVideosByTag(tagIds, page, VIDEO_PAGE_SIZE, sort)
+    : getAllVideos(page, VIDEO_PAGE_SIZE, sort);
+}
+
 export async function getAllVideos(
   page: number,
   size: number,

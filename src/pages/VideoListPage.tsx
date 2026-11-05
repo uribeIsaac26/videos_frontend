@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Video } from "../types/Video";
-import { getAllVideos, getVideosByTag } from "../api/VideoApi";
+import { getAllVideos, getVideosByTag, VIDEO_PAGE_SIZE } from "../api/VideoApi";
 import VideoCard from "../components/VideoCard";
 import { useSearchParams } from "react-router-dom";
 import UserMenu from "../components/UserMenu";
@@ -68,9 +68,9 @@ function videoListPage() {
         try {
             let data;
             if (currentTag && currentTag.length > 0) {
-                data = await getVideosByTag(currentTag, currentPage, 10, currentSort);
+                data = await getVideosByTag(currentTag, currentPage, VIDEO_PAGE_SIZE, currentSort);
             } else {
-                data = await getAllVideos(currentPage, 10, currentSort);
+                data = await getAllVideos(currentPage, VIDEO_PAGE_SIZE, currentSort);
             }
             setVideos(data.content);
             setTotalPages(data.totalPages);
@@ -176,6 +176,7 @@ function videoListPage() {
                         key={video.id}
                         video={video}
                         currentPage={page}
+                        totalPages={totalPages}
                         videos={videos}
                         index={index}
                         sortBy={sortBy}

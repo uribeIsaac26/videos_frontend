@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Image } from "../types/Image";
-import { getAllImages, getImagesByTag, getUntaggedImages } from "../api/ImageApi";
+import { getAllImages, getImagesByTag, getUntaggedImages, IMAGE_PAGE_SIZE } from "../api/ImageApi";
 import ImageCard from "../components/ImageCard";
 import { useSearchParams } from "react-router-dom";
 import UserMenu from "../components/UserMenu";
@@ -66,11 +66,11 @@ function ImageGalleryPage({ mode = "tagged" }: Props) {
         try {
             let data;
             if (isUntagged) {
-                data = await getUntaggedImages(currentPage, 20, currentSort);
+                data = await getUntaggedImages(currentPage, IMAGE_PAGE_SIZE, currentSort);
             } else if (currentTag && currentTag.length > 0) {
-                data = await getImagesByTag(currentTag, currentPage, 20, currentSort);
+                data = await getImagesByTag(currentTag, currentPage, IMAGE_PAGE_SIZE, currentSort);
             } else {
-                data = await getAllImages(currentPage, 20, currentSort);
+                data = await getAllImages(currentPage, IMAGE_PAGE_SIZE, currentSort);
             }
 
             // La página pedida quedó vacía (ej. se etiquetaron/eliminaron sus imágenes): ir a la última válida
@@ -194,7 +194,8 @@ function ImageGalleryPage({ mode = "tagged" }: Props) {
                         key={image.id}
                         image={image}
                         images={images}
-                        index={index} />
+                        index={index}
+                        totalPages={totalPages} />
                 ))}
             </div>
             <div className="pagination-container">

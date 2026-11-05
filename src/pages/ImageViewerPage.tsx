@@ -1,6 +1,6 @@
 
 import { useNavigate, useParams } from "react-router-dom";
-import { deleteImage } from "../api/ImageApi";
+import { deleteImage, getGalleryPage } from "../api/ImageApi";
 import { useSearchParams } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react"
@@ -16,10 +16,21 @@ function ImageViewerPage() {
   const page = searchParams.get("page") || "0";
 
   const location = useLocation();
-  const { images, index, from: fromState } = location.state || {};
+  const { images, index, from: fromState, totalPages } = location.state || {};
   // Lista de origen (ruta + query params). Fallback para accesos directos sin state.
   const from: string = fromState || `/gallery?page=${page}`;
   const isUntaggedOrigin = from.startsWith("/gallery/untagged");
+
+  // Solo desde la galería con tag se puede pasar de página sin salir del visor
+  const fromUrl = new URL(from, window.location.origin);
+  const isGalleryOrigin = fromUrl.pathname === "/gallery";
+  const fromPage = Number(fromUrl.searchParams.get("page")) || 0;
+  const fromSort = fromUrl.searchParams.get("sort") || "id,desc";
+  const fromTag = fromUrl.searchParams.get("tag");
+  const [loadingPage, setLoadingPage] = useState(false);
+  const [noMorePages, setNoMorePages] = useState(false);
+  const canGoNextPage = isGalleryOrigin && !noMorePages && (totalPages === undefined || fromPage < totalPages - 1);
+  const canGoPrevPage = isGalleryOrigin && fromPage > 0;
 
   const imageUrl = `${API_URL}/api/images/${id}/image`;
 
@@ -64,7 +75,7 @@ function ImageViewerPage() {
         }
         const nextIndex = Math.min(index, remaining.length - 1);
         navigate(`/gallery/${remaining[nextIndex].id}`, {
-          state: { images: remaining, index: nextIndex, from },
+          state: { images: remaining, index: nextIndex, from, totalPages },
           replace: true
         });
         return;
@@ -80,7 +91,7 @@ function ImageViewerPage() {
           pathname: location.pathname,
           search: `?${currentQuery}`
         }, {
-          state: { images: newImages, index, from },
+          state: { images: newImages, index, from, totalPages },
           replace: true
         });
       }
@@ -113,27 +124,61 @@ function ImageViewerPage() {
     }
   };
 
+  // Carga otra página de la galería (mismo orden y tags) y abre su primera o última imagen
+  const goToPage = async (targetPage: number, position: "first" | "last") => {
+    setLoadingPage(true);
+    try {
+      const data = await getGalleryPage(targetPage, fromSort, fromTag);
+      if (!data.content || data.content.length === 0) {
+        if (position === "first") setNoMorePages(true);
+        return;
+      }
+      const targetIndex = position === "first" ? 0 : data.content.length - 1;
+      const target = data.content[targetIndex];
+      const newParams = new URLSearchParams(fromUrl.searchParams);
+      newParams.set("page", String(targetPage));
+      setNoMorePages(false);
+      navigate(`/gallery/${target.id}`, {
+        state: {
+          images: data.content,
+          index: targetIndex,
+          from: `${fromUrl.pathname}?${newParams.toString()}`,
+          totalPages: data.totalPages
+        }
+      });
+    } catch (error) {
+      console.error("Error cargando la página de imágenes", error);
+      alert("No se pudo cargar la página de imágenes");
+    } finally {
+      setLoadingPage(false);
+    }
+  };
+
   const nextImage = () => {
-    if (!images) return;
+    if (!images || loadingPage) return;
 
     if (index < images.length - 1) {
       const next = images[index + 1];
 
       navigate(`/gallery/${next.id}`, {
-        state: { images, index: index + 1, from }
+        state: { images, index: index + 1, from, totalPages }
       });
+    } else if (canGoNextPage) {
+      goToPage(fromPage + 1, "first");
     }
   };
 
   const previousImage = () => {
-    if (!images) return;
+    if (!images || loadingPage) return;
 
     if (index > 0) {
       const prev = images[index - 1];
 
       navigate(`/gallery/${prev.id}`, {
-        state: { images, index: index - 1, from }
+        state: { images, index: index - 1, from, totalPages }
       });
+    } else if (canGoPrevPage) {
+      goToPage(fromPage - 1, "last");
     }
   };
 
@@ -176,14 +221,14 @@ function ImageViewerPage() {
           <button
             className="back-button"
             onClick={previousImage}
-            disabled={!images || index === 0}
+            disabled={!images || loadingPage || (index === 0 && !canGoPrevPage)}
           >
             ⏮ Anterior
           </button>
           <button
             className="back-button"
             onClick={nextImage}
-            disabled={!images || index === images.length - 1}
+            disabled={!images || loadingPage || (index === images.length - 1 && !canGoNextPage)}
           >
             Siguiente ⏭
           </button>

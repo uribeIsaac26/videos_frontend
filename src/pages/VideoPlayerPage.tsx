@@ -1,6 +1,6 @@
 
 import { useNavigate, useParams } from "react-router-dom";
-import { deleteVideo } from "../api/VideoApi";
+import { deleteVideo, getVideoListPage } from "../api/VideoApi";
 import { useSearchParams } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react"
@@ -18,12 +18,19 @@ function VideoPlayerPage() {
   const tag = searchParams.get("tag");
 
   const location = useLocation();
-  const { videos, index, fromIA, fromDuplicados } = location.state || {};
+  const { videos, index, fromIA, fromDuplicados, totalPages } = location.state || {};
+  // Solo desde la lista de videos se puede pasar de página sin salir del reproductor
+  const fromList = !fromIA && !fromDuplicados;
+  const pageNum = Number(page);
+  const [loadingPage, setLoadingPage] = useState(false);
+  const [noMorePages, setNoMorePages] = useState(false);
+  const canGoNextPage = fromList && !noMorePages && (totalPages === undefined || pageNum < totalPages - 1);
+  const canGoPrevPage = fromList && pageNum > 0;
 
   const videoUrl = `${API_URL}/api/videos/${id}/video`;
 
-  const buildListQuery = () => {
-    const params = new URLSearchParams({ page, sort });
+  const buildListQuery = (targetPage: string = page) => {
+    const params = new URLSearchParams({ page: targetPage, sort });
     if (tag) params.set("tag", tag);
     return params.toString();
   };
@@ -77,7 +84,7 @@ function VideoPlayerPage() {
           pathname: location.pathname,
           search: `?${currentQuery}`
         }, {
-          state: { videos: newVideos, index, fromIA, fromDuplicados },
+          state: { videos: newVideos, index, fromIA, fromDuplicados, totalPages },
           replace: true
         });
       }
@@ -117,27 +124,54 @@ function VideoPlayerPage() {
     }
   };
 
+  // Carga otra página de la lista (mismo orden y tags) y abre su primer o último video
+  const goToPage = async (targetPage: number, position: "first" | "last") => {
+    setLoadingPage(true);
+    try {
+      const data = await getVideoListPage(targetPage, sort, tag);
+      if (!data.content || data.content.length === 0) {
+        if (position === "first") setNoMorePages(true);
+        return;
+      }
+      const targetIndex = position === "first" ? 0 : data.content.length - 1;
+      const target = data.content[targetIndex];
+      setNoMorePages(false);
+      navigate(`/videos/${target.id}?${buildListQuery(String(targetPage))}`, {
+        state: { videos: data.content, index: targetIndex, totalPages: data.totalPages }
+      });
+    } catch (error) {
+      console.error("Error cargando la página de videos", error);
+      alert("No se pudo cargar la página de videos");
+    } finally {
+      setLoadingPage(false);
+    }
+  };
+
   const nextVideo = () => {
-    if (!videos) return;
+    if (!videos || loadingPage) return;
 
     if (index < videos.length - 1) {
       const next = videos[index + 1];
 
       navigate(`/videos/${next.id}?${buildListQuery()}`, {
-        state: { videos, index: index + 1, fromIA, fromDuplicados }
+        state: { videos, index: index + 1, fromIA, fromDuplicados, totalPages }
       });
+    } else if (canGoNextPage) {
+      goToPage(pageNum + 1, "first");
     }
   };
 
   const previousVideo = () => {
-    if (!videos) return;
+    if (!videos || loadingPage) return;
 
     if (index > 0) {
       const prev = videos[index - 1];
 
       navigate(`/videos/${prev.id}?${buildListQuery()}`, {
-        state: { videos, index: index - 1, fromIA, fromDuplicados }
+        state: { videos, index: index - 1, fromIA, fromDuplicados, totalPages }
       });
+    } else if (canGoPrevPage) {
+      goToPage(pageNum - 1, "last");
     }
   };
 
@@ -181,14 +215,14 @@ function VideoPlayerPage() {
           <button
             className="back-button"
             onClick={previousVideo}
-            disabled={!videos || index === 0}
+            disabled={!videos || loadingPage || (index === 0 && !canGoPrevPage)}
           >
             ⏮ Anterior
           </button>
           <button
             className="back-button"
             onClick={nextVideo}
-            disabled={!videos || index === videos.length - 1}
+            disabled={!videos || loadingPage || (index === videos.length - 1 && !canGoNextPage)}
           >
             Siguiente ⏭
           </button>

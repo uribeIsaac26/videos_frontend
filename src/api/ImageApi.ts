@@ -3,6 +3,21 @@ import type { Image } from "../types/Image";
 const API_URL = import.meta.env.VITE_API_URL;
 const BASE_URL = `${API_URL}/api/images`;
 
+// Tamaño de página de la galería; el visor lo usa para pedir páginas vecinas
+export const IMAGE_PAGE_SIZE = 20;
+
+// Página de la galería con tag con el mismo orden y filtro de tags que usa ImageGalleryPage
+export async function getGalleryPage(
+  page: number,
+  sort: string,
+  tagParam?: string | null
+): Promise<{ content: Image[]; totalPages: number }> {
+  const tagIds = tagParam ? tagParam.split(",").map(Number) : [];
+  return tagIds.length > 0
+    ? getImagesByTag(tagIds, page, IMAGE_PAGE_SIZE, sort)
+    : getAllImages(page, IMAGE_PAGE_SIZE, sort);
+}
+
 export async function getAllImages(
   page: number,
   size: number,
