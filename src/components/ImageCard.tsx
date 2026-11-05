@@ -66,19 +66,6 @@ function ImageCard({ image, currentPage, images, index }: Props) {
       ) : (
         <div className="thumbnail-placeholder">Cargando...</div>
       )}
-
-      <h3 className="image-title">{image.title}</h3>
-      <div className="video-tags-container">
-        {image.tags && image.tags.length > 0 ? (
-          image.tags.map((tag) => (
-            <span key={tag.id} className="video-tag-badge">
-              {tag.name}
-            </span>
-          ))
-        ) : (
-          <span className="no-tags">Sin etiquetas</span>
-        )}
-      </div>
     </div>
   );
 }
