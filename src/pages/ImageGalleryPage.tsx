@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Image } from "../types/Image";
-import { getAllImages, getImagesByTag } from "../api/ImageApi";
+import { getAllImages, getImagesByTag, getUntaggedImages } from "../api/ImageApi";
 import ImageCard from "../components/ImageCard";
 import { useSearchParams } from "react-router-dom";
 import UserMenu from "../components/UserMenu";
@@ -8,13 +8,19 @@ import GalleryMenu from "../components/GalleryMenu";
 import { useNavigate } from "react-router-dom";
 import { getTagById } from "../api/TagApi";
 
-function ImageGalleryPage() {
+interface Props {
+    mode?: "tagged" | "untagged";
+}
+
+function ImageGalleryPage({ mode = "tagged" }: Props) {
+    const isUntagged = mode === "untagged";
     const [images, setImages] = useState<Image[]>([]);
     const [searchParams, setSearchParams] = useSearchParams();
     const page = Number(searchParams.get("page")) || 0;
     const [totalPages, setTotalPages] = useState(0);
+    const [totalElements, setTotalElements] = useState(0);
     const [inputPage, setInputPage] = useState((page + 1).toString());
-    const tagParam = searchParams.get("tag");
+    const tagParam = isUntagged ? null : searchParams.get("tag");
     const navigate = useNavigate();
     const sortBy = searchParams.get("sort") || "id,desc";
     const tagIds = tagParam ? tagParam.split(",").map(Number) : [];
@@ -59,13 +65,25 @@ function ImageGalleryPage() {
     const fetchImages = async (currentPage: number, currentTag: number[], currentSort: string) => {
         try {
             let data;
-            if (currentTag && currentTag.length > 0) {
+            if (isUntagged) {
+                data = await getUntaggedImages(currentPage, 20, currentSort);
+            } else if (currentTag && currentTag.length > 0) {
                 data = await getImagesByTag(currentTag, currentPage, 20, currentSort);
             } else {
                 data = await getAllImages(currentPage, 20, currentSort);
             }
+
+            // La página pedida quedó vacía (ej. se etiquetaron/eliminaron sus imágenes): ir a la última válida
+            if (data.content.length === 0 && currentPage > 0 && data.totalPages > 0) {
+                const params: Record<string, string> = { page: (data.totalPages - 1).toString(), sort: currentSort };
+                if (tagParam) params.tag = tagParam;
+                setSearchParams(params, { replace: true });
+                return;
+            }
+
             setImages(data.content);
             setTotalPages(data.totalPages);
+            setTotalElements(data.totalElements);
         } catch (error) {
             console.error("Error cargando imágenes", error);
         }
@@ -100,7 +118,7 @@ function ImageGalleryPage() {
             <header className="main-header">
                 <div className="header-top-row">
                     <div className="title-filter-group">
-                        <h1>Galería de Imágenes</h1>
+                        <h1>{isUntagged ? "Imágenes sin tag" : "Galería de Imágenes"} ({totalElements})</h1>
                         <select
                             className="sort-select"
                             value={sortBy}
@@ -175,7 +193,6 @@ function ImageGalleryPage() {
                     <ImageCard
                         key={image.id}
                         image={image}
-                        currentPage={page}
                         images={images}
                         index={index} />
                 ))}

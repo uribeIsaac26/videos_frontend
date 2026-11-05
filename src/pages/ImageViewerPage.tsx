@@ -16,7 +16,10 @@ function ImageViewerPage() {
   const page = searchParams.get("page") || "0";
 
   const location = useLocation();
-  const { images, index } = location.state || {};
+  const { images, index, from: fromState } = location.state || {};
+  // Lista de origen (ruta + query params). Fallback para accesos directos sin state.
+  const from: string = fromState || `/gallery?page=${page}`;
+  const isUntaggedOrigin = from.startsWith("/gallery/untagged");
 
   const imageUrl = `${API_URL}/api/images/${id}/image`;
 
@@ -44,12 +47,29 @@ function ImageViewerPage() {
   }, [index, images, showTagModal]);
 
   const handleExit = () => {
-    navigate(`/gallery?page=${page}`);
+    navigate(from);
   };
 
   const handleSaveTags = async () => {
     try {
       const updatedImage = await addTagsToImage(Number(id), selectedTagIds);
+
+      // Modo cola: desde "Sin tag", la imagen ya etiquetada sale de la lista y se pasa a la siguiente
+      if (images && isUntaggedOrigin && updatedImage.tags?.length > 0) {
+        setShowTagModal(false);
+        const remaining = images.filter((_img: unknown, i: number) => i !== index);
+        if (remaining.length === 0) {
+          navigate(from, { replace: true });
+          return;
+        }
+        const nextIndex = Math.min(index, remaining.length - 1);
+        navigate(`/gallery/${remaining[nextIndex].id}`, {
+          state: { images: remaining, index: nextIndex, from },
+          replace: true
+        });
+        return;
+      }
+
       if (images) {
         const newImages = [...images];
         newImages[index] = updatedImage;
@@ -60,7 +80,7 @@ function ImageViewerPage() {
           pathname: location.pathname,
           search: `?${currentQuery}`
         }, {
-          state: { images: newImages, index },
+          state: { images: newImages, index, from },
           replace: true
         });
       }
@@ -86,7 +106,7 @@ function ImageViewerPage() {
 
     try {
       await deleteImage(Number(id));
-      navigate(`/gallery?page=${page}`);
+      navigate(from);
     } catch (error) {
       console.error("Error eliminando la imagen ", error);
       alert("No se pudo eliminar la imagen");
@@ -99,8 +119,8 @@ function ImageViewerPage() {
     if (index < images.length - 1) {
       const next = images[index + 1];
 
-      navigate(`/gallery/${next.id}?page=${page}`, {
-        state: { images, index: index + 1 }
+      navigate(`/gallery/${next.id}`, {
+        state: { images, index: index + 1, from }
       });
     }
   };
@@ -111,8 +131,8 @@ function ImageViewerPage() {
     if (index > 0) {
       const prev = images[index - 1];
 
-      navigate(`/gallery/${prev.id}?page=${page}`, {
-        state: { images, index: index - 1 }
+      navigate(`/gallery/${prev.id}`, {
+        state: { images, index: index - 1, from }
       });
     }
   };

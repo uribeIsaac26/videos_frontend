@@ -83,7 +83,15 @@ function App() {
         path="/gallery"
         element={
           <PrivateRoute>
-            <ImageGalleryPage />
+            <ImageGalleryPage mode="tagged" key="tagged" />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/gallery/untagged"
+        element={
+          <PrivateRoute>
+            <ImageGalleryPage mode="untagged" key="untagged" />
           </PrivateRoute>
         }
       />

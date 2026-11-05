@@ -1,26 +1,29 @@
 import type { Image } from "../types/Image";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 interface Props {
   image: Image;
-  currentPage: number;
   images: Image[];
   index: number;
 }
 
-function ImageCard({ image, currentPage, images, index }: Props) {
+function ImageCard({ image, images, index }: Props) {
 
   const navigate = useNavigate();
+  const location = useLocation();
   const [imageSrc, setImageSrc] = useState<string | null>(null);
 
   const handleClick = () => {
-    navigate(`/gallery/${image.id}?page=${currentPage}`, {
+    // URL exacta de la lista de origen (ruta + page/sort/tag) para que el visor vuelva a ella
+    const from = location.pathname + location.search;
+    navigate(`/gallery/${image.id}`, {
       state: {
         images,
-        index
+        index,
+        from
       }
     }
     );

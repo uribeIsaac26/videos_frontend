@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const GalleryMenu = () => {
     const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate();
+    const { pathname } = useLocation();
+    const isUntaggedView = pathname === "/gallery/untagged";
 
     return (
         <div className="user-menu-container">
@@ -16,6 +18,16 @@ const GalleryMenu = () => {
 
             {isOpen && (
                 <div className="dropdown-menu">
+                    <button
+                        className="dropdown-item"
+                        onClick={() => {
+                            setIsOpen(false);
+                            navigate(isUntaggedView ? "/gallery" : "/gallery/untagged");
+                        }}
+                    >
+                        {isUntaggedView ? "🖼️ Imágenes con tag" : "🚫 Imágenes sin tag"}
+                    </button>
+
                     <button
                         className="dropdown-item"
                         onClick={() => {

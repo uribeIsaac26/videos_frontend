@@ -27,6 +27,29 @@ export async function getAllImages(
   return data;
 }
 
+export async function getUntaggedImages(
+  page: number,
+  size: number,
+  sort: string = "id,desc"
+): Promise<{ content: Image[]; totalPages: number; totalElements: number }> {
+
+  const response = await fetch(
+    `${BASE_URL}/untagged?page=${page}&size=${size}&sort=${sort}`,
+    {
+      credentials: "include",
+    }
+  );
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      window.location.href = "/login";
+    }
+    throw new Error("Error al obtener las imágenes sin tag");
+  }
+
+  return response.json();
+}
+
 export async function getImagesByTag(
   tagId: string | number | (string | number)[],
   page: number,
